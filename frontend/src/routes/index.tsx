@@ -1,0 +1,583 @@
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { Button } from '../components/ui/button'
+import {
+  CheckCircle2,
+  Users,
+  BarChart3,
+  Clock,
+  Zap,
+  Lock,
+  Menu,
+  X,
+  Calendar,
+  MessageSquare,
+  Flag,
+  ArrowRight,
+  Star,
+  Github,
+  Twitter,
+  Linkedin,
+  ChevronRight,
+  Sparkles,
+  Shield,
+  Globe,
+} from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+
+export const Route = createFileRoute('/')({
+  component: RouteComponent,
+})
+
+/* ───── Intersection Observer hook for scroll-triggered animations ───── */
+function useInView(threshold = 0.15) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [inView, setInView] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true) }, { threshold })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [threshold])
+  return { ref, inView }
+}
+
+function RouteComponent() {
+  const navigate = useNavigate()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  const features = [
+    {
+      icon: Calendar,
+      title: 'Smart Planning',
+      description: 'Organize tasks with intuitive calendars, timelines, and kanban boards that adapt to your workflow.',
+      color: 'from-blue-500 to-cyan-500',
+    },
+    {
+      icon: Users,
+      title: 'Team Collaboration',
+      description: 'Work seamlessly with real-time cursors, comments, @mentions and shared workspaces.',
+      color: 'from-violet-500 to-purple-500',
+    },
+    {
+      icon: BarChart3,
+      title: 'Analytics & Insights',
+      description: 'Track velocity, burndown charts, and team-performance metrics at a glance.',
+      color: 'from-amber-500 to-orange-500',
+    },
+    {
+      icon: Clock,
+      title: 'Time Tracking',
+      description: 'Built-in time tracking per task so you always know where your hours go.',
+      color: 'from-emerald-500 to-teal-500',
+    },
+    {
+      icon: Zap,
+      title: 'Automations',
+      description: 'Automate repetitive workflows and integrate with Slack, GitHub, Figma & 100+ tools.',
+      color: 'from-pink-500 to-rose-500',
+    },
+    {
+      icon: Lock,
+      title: 'Enterprise Security',
+      description: 'SOC 2, SSO, RBAC, audit logs and 99.99 % uptime SLA — built for scale.',
+      color: 'from-indigo-500 to-blue-500',
+    },
+  ]
+
+  const plans = [
+    {
+      name: 'Starter',
+      price: '$0',
+      period: 'forever',
+      description: 'Great for side-projects & solo makers',
+      features: ['Up to 3 members', '1 GB storage', 'Basic board view', 'Community support'],
+    },
+    {
+      name: 'Professional',
+      price: '$12',
+      period: '/member/mo',
+      description: 'For growing teams that ship fast',
+      features: [
+        'Unlimited members',
+        '100 GB storage',
+        'Advanced analytics',
+        'Priority support',
+        'Custom workflows',
+        'API access',
+        'Time tracking',
+      ],
+      highlighted: true,
+    },
+    {
+      name: 'Enterprise',
+      price: 'Custom',
+      period: '',
+      description: 'For orgs that need control & compliance',
+      features: [
+        'Everything in Pro',
+        'Unlimited storage',
+        'SAML / SSO',
+        '24/7 dedicated support',
+        'Custom SLA',
+        'Audit logs',
+        'Dedicated CSM',
+      ],
+    },
+  ]
+
+  const testimonials = [
+    { name: 'Sarah Chen', role: 'Engineering Lead, Vercel', text: 'TeamFlow replaced 3 different tools for us. Our sprint velocity increased 40 % in the first quarter.', avatar: 'SC' },
+    { name: 'James Okoro', role: 'PM, Stripe', text: "The best project management tool I've used. Period. The real-time collaboration is magic.", avatar: 'JO' },
+    { name: 'Maria Silva', role: 'CTO, Linear', text: 'We evaluated every tool on the market. TeamFlow won on speed, design and developer experience.', avatar: 'MS' },
+    { name: 'David Park', role: 'Founder, Raycast', text: "Finally a PM tool that engineers actually enjoy using. Keyboard-first, blazingly fast.", avatar: 'DP' },
+  ]
+
+  const logos = ['Vercel', 'Stripe', 'Linear', 'Raycast', 'Supabase', 'Planetscale', 'Clerk', 'Resend']
+
+  /* section refs */
+  const featureVis = useInView()
+  const statsVis = useInView()
+  const pricingVis = useInView()
+  const testimonialVis = useInView()
+  const ctaVis = useInView()
+
+  return (
+    <div className="min-h-screen bg-[#0a0a0f] text-white overflow-x-hidden noise-overlay relative">
+
+      {/* ══════ Ambient background orbs ══════ */}
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-600/20 blur-[140px] animate-pulse-glow" />
+        <div className="absolute top-[30%] right-[-10%] w-[500px] h-[500px] rounded-full bg-cyan-500/15 blur-[120px] animate-pulse-glow" style={{ animationDelay: '2s' }} />
+        <div className="absolute bottom-[-10%] left-[30%] w-[500px] h-[500px] rounded-full bg-purple-600/15 blur-[130px] animate-pulse-glow" style={{ animationDelay: '4s' }} />
+      </div>
+
+      {/* ══════ Navigation ══════ */}
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-[#0a0a0f]/80 backdrop-blur-xl border-b border-white/5 shadow-lg shadow-black/20' : 'bg-transparent'}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo */}
+            <div className="flex items-center gap-2.5 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/25 group-hover:shadow-indigo-500/40 transition-shadow">
+                <Flag className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-bold tracking-tight">TeamFlow</span>
+            </div>
+
+            {/* Desktop links */}
+            <div className="hidden md:flex items-center gap-1">
+              {['Features', 'Pricing', 'Testimonials'].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => document.getElementById(item.toLowerCase())?.scrollIntoView({ behavior: 'smooth' })}
+                  className="px-4 py-2 text-sm text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition-all"
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+
+            {/* Auth buttons desktop */}
+            <div className="hidden md:flex items-center gap-3">
+              <Button
+                variant="ghost"
+                className="text-slate-300 hover:text-white hover:bg-white/5"
+                onClick={() => navigate({ to: '/login' })}
+              >
+                Sign In
+              </Button>
+              <Button
+                className="bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all"
+                onClick={() => navigate({ to: '/signup' })}
+              >
+                Get Started Free
+                <ArrowRight className="w-4 h-4 ml-1" />
+              </Button>
+            </div>
+
+            {/* Mobile toggle */}
+            <button className="md:hidden p-2 rounded-lg hover:bg-white/5" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
+
+          {/* Mobile menu */}
+          {isMenuOpen && (
+            <div className="md:hidden pb-6 pt-2 space-y-2 animate-slide-up">
+              {['Features', 'Pricing', 'Testimonials'].map((item) => (
+                <button
+                  key={item}
+                  className="block w-full text-left px-4 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition"
+                  onClick={() => { document.getElementById(item.toLowerCase())?.scrollIntoView({ behavior: 'smooth' }); setIsMenuOpen(false) }}
+                >
+                  {item}
+                </button>
+              ))}
+              <div className="pt-3 flex flex-col gap-2">
+                <Button variant="ghost" className="justify-start text-slate-300" onClick={() => navigate({ to: '/login' })}>Sign In</Button>
+                <Button className="bg-gradient-to-r from-indigo-500 to-cyan-500 text-white" onClick={() => navigate({ to: '/signup' })}>
+                  Get Started Free <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </nav>
+
+      {/* ══════ Hero ══════ */}
+      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20 md:pt-44 md:pb-32">
+        <div className="text-center space-y-8">
+          {/* Pill badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 animate-slide-up">
+            <Sparkles className="w-4 h-4 text-indigo-400" />
+            <span className="text-sm font-medium text-indigo-300">Now with AI-powered project insights</span>
+            <ChevronRight className="w-3.5 h-3.5 text-indigo-400" />
+          </div>
+
+          {/* Heading */}
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[1.05] animate-slide-up-delay-1">
+            Manage Projects.
+            <br />
+            <span className="text-gradient animate-gradient-shift">Empower Teams.</span>
+          </h1>
+
+          {/* Sub-heading */}
+          <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed animate-slide-up-delay-2">
+            The all-in-one workspace where modern teams plan, track and ship products together — beautifully fast.
+          </p>
+
+          {/* CTA row */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-2 animate-slide-up-delay-3">
+            <Button
+              className="bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white px-8 py-6 text-lg shadow-xl shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all"
+              onClick={() => navigate({ to: '/signup' })}
+            >
+              Start Free — No Card Needed
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+            <Button
+              variant="outline"
+              className="border-white/10 text-slate-300 hover:text-white hover:bg-white/5 px-8 py-6 text-lg"
+            >
+              <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+              Watch Demo
+            </Button>
+          </div>
+
+          {/* Social proof */}
+          <div className="flex flex-col items-center gap-3 pt-4 animate-slide-up-delay-4">
+            <div className="flex -space-x-2">
+              {['bg-violet-500', 'bg-cyan-500', 'bg-amber-500', 'bg-rose-500', 'bg-emerald-500'].map((bg, i) => (
+                <div key={i} className={`w-8 h-8 rounded-full ${bg} border-2 border-[#0a0a0f] flex items-center justify-center text-xs font-semibold`}>
+                  {String.fromCharCode(65 + i)}
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center gap-1">
+              {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />)}
+              <span className="text-sm text-slate-400 ml-2">Loved by <span className="text-white font-medium">10,000+</span> teams</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Hero mockup / dashboard preview */}
+        <div className="mt-20 relative max-w-5xl mx-auto animate-fade-in" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
+          <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 via-cyan-500/20 to-purple-500/20 rounded-2xl blur-2xl" />
+          <div className="relative rounded-2xl border border-white/10 bg-[#111118] overflow-hidden shadow-2xl">
+            {/* Fake browser chrome */}
+            <div className="flex items-center gap-2 px-4 py-3 bg-[#0c0c12] border-b border-white/5">
+              <div className="flex gap-1.5">
+                <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                <div className="w-3 h-3 rounded-full bg-green-500/80" />
+              </div>
+              <div className="flex-1 mx-4">
+                <div className="h-6 bg-white/5 rounded-md max-w-sm mx-auto flex items-center justify-center text-xs text-slate-500">app.teamflow.dev/dashboard</div>
+              </div>
+            </div>
+            {/* Content area: a stylized dashboard preview */}
+            <div className="p-6 md:p-8 grid grid-cols-12 gap-4">
+              {/* Sidebar mock */}
+              <div className="col-span-3 hidden md:flex flex-col gap-3">
+                <div className="h-8 bg-white/5 rounded-lg w-3/4" />
+                <div className="h-6 bg-indigo-500/20 rounded-lg" />
+                <div className="h-6 bg-white/5 rounded-lg" />
+                <div className="h-6 bg-white/5 rounded-lg w-5/6" />
+                <div className="h-6 bg-white/5 rounded-lg w-4/6" />
+                <div className="mt-auto h-6 bg-white/5 rounded-lg w-2/3" />
+              </div>
+              {/* Main content mock */}
+              <div className="col-span-12 md:col-span-9 space-y-4">
+                <div className="flex gap-4">
+                  <div className="flex-1 h-24 rounded-xl bg-gradient-to-br from-indigo-500/20 to-indigo-500/5 border border-indigo-500/10 p-4">
+                    <div className="h-3 bg-indigo-400/30 rounded w-16 mb-2" />
+                    <div className="h-6 bg-indigo-400/20 rounded w-12" />
+                  </div>
+                  <div className="flex-1 h-24 rounded-xl bg-gradient-to-br from-cyan-500/20 to-cyan-500/5 border border-cyan-500/10 p-4">
+                    <div className="h-3 bg-cyan-400/30 rounded w-16 mb-2" />
+                    <div className="h-6 bg-cyan-400/20 rounded w-12" />
+                  </div>
+                  <div className="flex-1 h-24 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-500/5 border border-purple-500/10 p-4 hidden sm:block">
+                    <div className="h-3 bg-purple-400/30 rounded w-16 mb-2" />
+                    <div className="h-6 bg-purple-400/20 rounded w-12" />
+                  </div>
+                </div>
+                {/* Kanban columns */}
+                <div className="grid grid-cols-3 gap-3">
+                  {['To Do', 'In Progress', 'Done'].map((col) => (
+                    <div key={col} className="rounded-xl bg-white/[0.02] border border-white/5 p-3 space-y-2">
+                      <div className="text-[10px] uppercase tracking-wider text-slate-500 font-medium">{col}</div>
+                      {[...Array(col === 'In Progress' ? 3 : 2)].map((_, j) => (
+                        <div key={j} className="h-10 rounded-lg bg-white/5 border border-white/5" />
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════ Logo cloud ══════ */}
+      <section className="border-y border-white/5 py-10 overflow-hidden">
+        <p className="text-center text-xs uppercase tracking-widest text-slate-500 mb-8">Trusted by forward-thinking teams</p>
+        <div className="relative">
+          <div className="flex gap-16 animate-marquee whitespace-nowrap">
+            {[...logos, ...logos].map((name, i) => (
+              <span key={i} className="text-slate-500/60 text-lg font-semibold tracking-wide select-none">{name}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════ Features ══════ */}
+      <section id="features" ref={featureVis.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28">
+        <div className={`text-center mb-16 transition-all duration-700 ${featureVis.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <p className="text-indigo-400 text-sm font-semibold uppercase tracking-widest mb-3">Features</p>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">Everything your team needs</h2>
+          <p className="text-lg text-slate-400 max-w-xl mx-auto">Powerful alone — unstoppable together. One platform to plan, track & deliver.</p>
+        </div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {features.map((feature, idx) => {
+            const Icon = feature.icon
+            return (
+              <div
+                key={idx}
+                className={`glass-card rounded-2xl p-7 group transition-all duration-500 cursor-default ${featureVis.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                style={{ transitionDelay: `${idx * 80}ms` }}
+              >
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 transition-transform`}>
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">{feature.description}</p>
+              </div>
+            )
+          })}
+        </div>
+      </section>
+
+      {/* ══════ Stats ══════ */}
+      <section ref={statsVis.ref} className="py-24">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className={`grid sm:grid-cols-3 gap-8 transition-all duration-700 ${statsVis.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            {[
+              { value: '10,000+', label: 'Teams worldwide', icon: Globe },
+              { value: '2M+', label: 'Tasks completed', icon: CheckCircle2 },
+              { value: '99.99%', label: 'Uptime SLA', icon: Shield },
+            ].map((stat, i) => (
+              <div key={i} className="gradient-border rounded-2xl">
+                <div className="rounded-2xl bg-[#0a0a0f] p-8 text-center">
+                  <stat.icon className="w-8 h-8 text-indigo-400 mx-auto mb-4" />
+                  <div className="text-4xl md:text-5xl font-bold text-gradient mb-2">{stat.value}</div>
+                  <p className="text-slate-400">{stat.label}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════ Testimonials ══════ */}
+      <section id="testimonials" ref={testimonialVis.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 border-t border-white/5">
+        <div className={`text-center mb-16 transition-all duration-700 ${testimonialVis.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <p className="text-indigo-400 text-sm font-semibold uppercase tracking-widest mb-3">Testimonials</p>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">Loved by teams everywhere</h2>
+          <p className="text-lg text-slate-400 max-w-xl mx-auto">Don't take our word for it — hear from the people who use TeamFlow every day.</p>
+        </div>
+
+        <div className="grid sm:grid-cols-2 gap-6">
+          {testimonials.map((t, i) => (
+            <div
+              key={i}
+              className={`glass-card rounded-2xl p-7 transition-all duration-500 ${testimonialVis.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+              style={{ transitionDelay: `${i * 100}ms` }}
+            >
+              <div className="flex items-center gap-1 mb-4">
+                {[...Array(5)].map((_, j) => <Star key={j} className="w-4 h-4 fill-amber-400 text-amber-400" />)}
+              </div>
+              <p className="text-slate-300 mb-6 leading-relaxed">"{t.text}"</p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center text-sm font-bold">
+                  {t.avatar}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold">{t.name}</p>
+                  <p className="text-xs text-slate-500">{t.role}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ══════ Pricing ══════ */}
+      <section id="pricing" ref={pricingVis.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 border-t border-white/5">
+        <div className={`text-center mb-16 transition-all duration-700 ${pricingVis.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <p className="text-indigo-400 text-sm font-semibold uppercase tracking-widest mb-3">Pricing</p>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">Simple, transparent pricing</h2>
+          <p className="text-lg text-slate-400 max-w-xl mx-auto">Start free. Upgrade when you're ready. No surprises.</p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6 items-start">
+          {plans.map((plan, idx) => (
+            <div
+              key={idx}
+              className={`relative rounded-2xl transition-all duration-500 ${pricingVis.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} ${
+                plan.highlighted
+                  ? 'gradient-border bg-[#0a0a0f] scale-[1.03] z-10'
+                  : 'glass-card'
+              }`}
+              style={{ transitionDelay: `${idx * 100}ms` }}
+            >
+              {plan.highlighted && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-indigo-500 to-cyan-500 text-white text-xs font-semibold rounded-full shadow-lg shadow-indigo-500/25">
+                  Most Popular
+                </div>
+              )}
+              <div className={`p-8 ${plan.highlighted ? 'rounded-2xl bg-[#0a0a0f]' : ''}`}>
+                <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
+                <p className="text-sm text-slate-500 mb-6">{plan.description}</p>
+                <div className="mb-8">
+                  <span className="text-5xl font-extrabold">{plan.price}</span>
+                  {plan.period && <span className="text-slate-400 ml-1 text-sm">{plan.period}</span>}
+                </div>
+                <Button
+                  className={`w-full py-5 font-semibold transition-all ${
+                    plan.highlighted
+                      ? 'bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white shadow-lg shadow-indigo-500/25'
+                      : 'bg-white/5 hover:bg-white/10 text-white border border-white/10'
+                  }`}
+                  onClick={() => navigate({ to: '/signup' })}
+                >
+                  {plan.price === 'Custom' ? 'Contact Sales' : 'Get Started'}
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+                <div className="mt-8 space-y-3">
+                  {plan.features.map((feature, fidx) => (
+                    <div key={fidx} className="flex gap-3 items-start">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-sm text-slate-300">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ══════ CTA ══════ */}
+      <section ref={ctaVis.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28">
+        <div
+          className={`relative rounded-3xl overflow-hidden transition-all duration-700 ${ctaVis.inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        >
+          {/* Background layers */}
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-blue-600 to-cyan-600" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.15),transparent_60%)]" />
+          <div className="absolute bottom-0 left-0 w-72 h-72 bg-white/10 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
+          <div className="absolute top-0 right-0 w-56 h-56 bg-cyan-400/20 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3" />
+
+          <div className="relative z-10 px-8 py-16 md:px-16 md:py-24 text-center">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">Ready to transform<br />your workflow?</h2>
+            <p className="text-lg text-white/70 mb-10 max-w-xl mx-auto">Join 10,000+ teams shipping better software with TeamFlow. Free 14-day trial — no credit card required.</p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                className="bg-white text-indigo-600 hover:bg-slate-100 px-8 py-6 text-lg font-semibold shadow-xl shadow-black/10 hover:shadow-black/20 transition-all"
+                onClick={() => navigate({ to: '/signup' })}
+              >
+                Start Your Free Trial
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+              <Button
+                variant="outline"
+                className="border-white/30 text-white hover:bg-white/10 px-8 py-6 text-lg"
+              >
+                <MessageSquare className="w-5 h-5 mr-2" />
+                Talk to Sales
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════ Footer ══════ */}
+      <footer className="border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+            {/* Brand */}
+            <div className="lg:col-span-2">
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center">
+                  <Flag className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-lg font-bold">TeamFlow</span>
+              </div>
+              <p className="text-slate-500 text-sm max-w-xs leading-relaxed mb-6">The modern project management platform built for teams that ship fast.</p>
+              <div className="flex gap-3">
+                {[Github, Twitter, Linkedin].map((Icon, i) => (
+                  <a key={i} href="#" className="w-9 h-9 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                    <Icon className="w-4 h-4" />
+                  </a>
+                ))}
+              </div>
+            </div>
+            {/* Links */}
+            {[
+              { title: 'Product', links: ['Features', 'Pricing', 'Integrations', 'Changelog'] },
+              { title: 'Company', links: ['About', 'Blog', 'Careers', 'Press'] },
+              { title: 'Legal', links: ['Privacy', 'Terms', 'Security', 'Contact'] },
+            ].map((col) => (
+              <div key={col.title}>
+                <h4 className="text-sm font-semibold mb-4">{col.title}</h4>
+                <ul className="space-y-2.5">
+                  {col.links.map((link) => (
+                    <li key={link}>
+                      <a href="#" className="text-sm text-slate-500 hover:text-white transition">{link}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <div className="border-t border-white/5 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-slate-600 text-sm">&copy; 2026 TeamFlow. All rights reserved.</p>
+            <p className="text-slate-700 text-xs">Built with care for modern teams.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  )
+}
+
+  
+

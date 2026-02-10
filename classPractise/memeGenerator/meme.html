@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Meme Generator</title>
+    <link rel="stylesheet" href="meme.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Random Meme Generator</h1>
+        <p class="subtitle">Click the button to get a random meme</p>
+        
+        <div class="meme-container" id="memeContainer">
+            <div class="placeholder" id="placeholder">
+                <p>Your meme will appear here</p>
+            </div>
+            <img id="memeImage" src="" alt="Random Meme">
+        </div>
+        
+        <div class="meme-info" id="memeInfo">
+            <h3 id="memeTitle"></h3>
+            <div class="stats">
+                <span id="memeUpvotes"></span>
+                <span id="memeAuthor"></span>
+            </div>
+            <div class="meme-status" id="memeStatus"></div>
+        </div>
+        
+        <div class="navigation-buttons">
+            <button id="prevBtn" onclick="previousMeme()" style="display: none;">← Previous</button>
+            <button id="generateBtn" onclick="generateMeme()">Generate Meme</button>
+            <button id="nextBtn" onclick="nextMeme()" style="display: none;">Next →</button>
+        </div>
+        
+        <div class="loader" id="loader">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+    
+    <script src="meme.js"></script>
+</body>
+</html>
