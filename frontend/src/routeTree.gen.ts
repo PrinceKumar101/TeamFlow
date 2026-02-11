@@ -9,26 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardSkeletonRouteImport } from './routes/dashboardSkeleton'
+import { Route as DashBoardRouteImport } from './routes/dashBoard'
 import { Route as CounterRouteImport } from './routes/counter'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as authSignupRouteImport } from './routes/(auth)/signup'
+import { Route as authLoginRouteImport } from './routes/(auth)/login'
 
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DashboardSkeletonRoute = DashboardSkeletonRouteImport.update({
   id: '/dashboardSkeleton',
   path: '/dashboardSkeleton',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashBoardRoute = DashBoardRouteImport.update({
+  id: '/dashBoard',
+  path: '/dashBoard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CounterRoute = CounterRouteImport.update({
@@ -46,31 +42,44 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const authSignupRoute = authSignupRouteImport.update({
+  id: '/(auth)/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authLoginRoute = authLoginRouteImport.update({
+  id: '/(auth)/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/counter': typeof CounterRoute
+  '/dashBoard': typeof DashBoardRoute
   '/dashboardSkeleton': typeof DashboardSkeletonRoute
-  '/login': typeof LoginRoute
-  '/signup': typeof SignupRoute
+  '/login': typeof authLoginRoute
+  '/signup': typeof authSignupRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/counter': typeof CounterRoute
+  '/dashBoard': typeof DashBoardRoute
   '/dashboardSkeleton': typeof DashboardSkeletonRoute
-  '/login': typeof LoginRoute
-  '/signup': typeof SignupRoute
+  '/login': typeof authLoginRoute
+  '/signup': typeof authSignupRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/counter': typeof CounterRoute
+  '/dashBoard': typeof DashBoardRoute
   '/dashboardSkeleton': typeof DashboardSkeletonRoute
-  '/login': typeof LoginRoute
-  '/signup': typeof SignupRoute
+  '/(auth)/login': typeof authLoginRoute
+  '/(auth)/signup': typeof authSignupRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -78,51 +87,54 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/counter'
+    | '/dashBoard'
     | '/dashboardSkeleton'
     | '/login'
     | '/signup'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/counter' | '/dashboardSkeleton' | '/login' | '/signup'
+  to:
+    | '/'
+    | '/about'
+    | '/counter'
+    | '/dashBoard'
+    | '/dashboardSkeleton'
+    | '/login'
+    | '/signup'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/counter'
+    | '/dashBoard'
     | '/dashboardSkeleton'
-    | '/login'
-    | '/signup'
+    | '/(auth)/login'
+    | '/(auth)/signup'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   CounterRoute: typeof CounterRoute
+  DashBoardRoute: typeof DashBoardRoute
   DashboardSkeletonRoute: typeof DashboardSkeletonRoute
-  LoginRoute: typeof LoginRoute
-  SignupRoute: typeof SignupRoute
+  authLoginRoute: typeof authLoginRoute
+  authSignupRoute: typeof authSignupRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/dashboardSkeleton': {
       id: '/dashboardSkeleton'
       path: '/dashboardSkeleton'
       fullPath: '/dashboardSkeleton'
       preLoaderRoute: typeof DashboardSkeletonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashBoard': {
+      id: '/dashBoard'
+      path: '/dashBoard'
+      fullPath: '/dashBoard'
+      preLoaderRoute: typeof DashBoardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/counter': {
@@ -146,6 +158,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(auth)/signup': {
+      id: '/(auth)/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof authSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/login': {
+      id: '/(auth)/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -153,9 +179,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   CounterRoute: CounterRoute,
+  DashBoardRoute: DashBoardRoute,
   DashboardSkeletonRoute: DashboardSkeletonRoute,
-  LoginRoute: LoginRoute,
-  SignupRoute: SignupRoute,
+  authLoginRoute: authLoginRoute,
+  authSignupRoute: authSignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

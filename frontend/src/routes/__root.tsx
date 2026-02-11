@@ -3,8 +3,10 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 const RootLayout = () => (
   <>
+    <main className="min-h-screen">
       <Outlet />
       <TanStackRouterDevtools />
+    </main>
   </>
 );
 

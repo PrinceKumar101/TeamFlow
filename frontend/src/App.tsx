@@ -1,7 +1,6 @@
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
-import { Provider } from "react-redux";
-import store from "./store/store";
+
 
 const router = createRouter({ routeTree });
 
@@ -14,9 +13,7 @@ const App = () => {
   return (
     <>
       <div>
-        <Provider store={store}>
           <RouterProvider router={router} />
-        </Provider>
       </div>
     </>
   );

@@ -24,7 +24,7 @@ const signupSchema = z.object({
 
 type SignupFormValues = z.infer<typeof signupSchema>
 
-export const Route = createFileRoute('/signup')({
+export const Route = createFileRoute('/(auth)/signup')({
   component: RouteComponent,
 })
 
@@ -58,7 +58,7 @@ function RouteComponent() {
     return s
   })()
   const pwLabel = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Very strong'][pwStrength] ?? ''
-  const pwColor = ['bg-slate-700', 'bg-red-500', 'bg-orange-500', 'bg-amber-500', 'bg-emerald-500', 'bg-emerald-400'][pwStrength]
+  const pwColor = ['bg-muted', 'bg-red-500', 'bg-orange-500', 'bg-amber-500', 'bg-emerald-500', 'bg-emerald-400'][pwStrength]
 
   async function onSubmit(values: SignupFormValues) {
     setIsLoading(true)
@@ -90,34 +90,34 @@ function RouteComponent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex noise-overlay relative">
+    <div className="min-h-screen bg-background flex noise-overlay relative">
       {/* Ambient orbs */}
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute top-[-15%] right-[-5%] w-[500px] h-[500px] rounded-full bg-purple-600/20 blur-[140px] animate-pulse-glow" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] rounded-full bg-indigo-500/15 blur-[120px] animate-pulse-glow" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[-15%] right-[-5%] w-125 h-125 rounded-full bg-chart-2/20 blur-[140px] animate-pulse-glow" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-100 h-100 rounded-full bg-primary/15 blur-[120px] animate-pulse-glow" style={{ animationDelay: '2s' }} />
       </div>
 
       {/* Left decorative panel — hidden on mobile */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center p-12">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 via-transparent to-indigo-600/10" />
-        <div className="absolute top-1/3 left-1/4 w-72 h-72 rounded-full bg-purple-500/10 blur-[100px]" />
-        <div className="absolute bottom-1/4 right-1/3 w-56 h-56 rounded-full bg-indigo-500/10 blur-[80px]" />
+        <div className="absolute inset-0 bg-linear-to-br from-chart-2/10 via-transparent to-primary/10" />
+        <div className="absolute top-1/3 left-1/4 w-72 h-72 rounded-full bg-chart-2/10 blur-[100px]" />
+        <div className="absolute bottom-1/4 right-1/3 w-56 h-56 rounded-full bg-primary/10 blur-[80px]" />
 
         <div className="relative z-10 max-w-md space-y-8">
           {/* Logo */}
           <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => navigate({ to: '/' })}>
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/25">
-              <Flag className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary to-ring flex items-center justify-center shadow-lg shadow-primary/25">
+              <Flag className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="text-2xl font-bold text-white tracking-tight">TeamFlow</span>
+            <span className="text-2xl font-bold text-foreground tracking-tight">TeamFlow</span>
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-4xl font-bold text-white leading-tight">
+            <h2 className="text-4xl font-bold text-foreground leading-tight">
               Start building with your
               <span className="text-gradient"> dream team</span>
             </h2>
-            <p className="text-slate-400 text-lg leading-relaxed">
+            <p className="text-muted-foreground text-lg leading-relaxed">
               Set up in under 2 minutes. No credit card required. Unlimited projects on the free plan.
             </p>
           </div>
@@ -131,10 +131,10 @@ function RouteComponent() {
               { icon: CheckCircle2, text: '14-day Pro trial included, no strings' },
             ].map((p, i) => (
               <div key={i} className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <p.icon className="w-4 h-4 text-indigo-400" />
+                <div className="w-8 h-8 rounded-lg bg-card border border-border flex items-center justify-center shrink-0 mt-0.5">
+                  <p.icon className="w-4 h-4 text-primary" />
                 </div>
-                <p className="text-slate-300 text-sm leading-relaxed">{p.text}</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">{p.text}</p>
               </div>
             ))}
           </div>
@@ -143,12 +143,12 @@ function RouteComponent() {
           <div className="flex items-center gap-3 pt-2">
             <div className="flex -space-x-2">
               {['bg-violet-500', 'bg-cyan-500', 'bg-amber-500', 'bg-rose-500'].map((bg, i) => (
-                <div key={i} className={`w-8 h-8 rounded-full ${bg} border-2 border-[#0a0a0f] flex items-center justify-center text-xs font-semibold text-white`}>
+                <div key={i} className={`w-8 h-8 rounded-full ${bg} border-2 border-background flex items-center justify-center text-xs font-semibold text-white`}>
                   {String.fromCharCode(65 + i)}
                 </div>
               ))}
             </div>
-            <p className="text-sm text-slate-500">Join <span className="text-white font-medium">10,000+</span> teams</p>
+            <p className="text-sm text-muted-foreground">Join <span className="text-foreground font-medium">10,000+</span> teams</p>
           </div>
         </div>
       </div>
@@ -158,21 +158,21 @@ function RouteComponent() {
         <div className="w-full max-w-md space-y-7">
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center justify-center gap-2.5 mb-4 cursor-pointer" onClick={() => navigate({ to: '/' })}>
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/25">
-              <Flag className="w-5 h-5 text-white" />
+            <div className="w-9 h-9 rounded-xl bg-linear-to-br from-primary to-ring flex items-center justify-center shadow-lg shadow-primary/25">
+              <Flag className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold text-white">TeamFlow</span>
+            <span className="text-xl font-bold text-foreground">TeamFlow</span>
           </div>
 
           {/* Header */}
           <div className="text-center lg:text-left">
-            <h1 className="text-3xl font-bold text-white mb-2">Create your account</h1>
-            <p className="text-slate-500">Free forever. Upgrade anytime.</p>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Create your account</h1>
+            <p className="text-muted-foreground">Free forever. Upgrade anytime.</p>
           </div>
 
           {/* Social login */}
           <div className="grid grid-cols-2 gap-3">
-            <Button variant="outline" className="bg-white/[0.03] border-white/10 text-slate-300 hover:bg-white/[0.06] hover:text-white py-5">
+            <Button variant="outline" className="bg-card border-border text-muted-foreground hover:bg-accent hover:text-foreground py-5">
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
                 <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -181,7 +181,7 @@ function RouteComponent() {
               </svg>
               Google
             </Button>
-            <Button variant="outline" className="bg-white/[0.03] border-white/10 text-slate-300 hover:bg-white/[0.06] hover:text-white py-5">
+            <Button variant="outline" className="bg-card border-border text-muted-foreground hover:bg-accent hover:text-foreground py-5">
               <Github className="w-5 h-5 mr-2" />
               GitHub
             </Button>
@@ -189,16 +189,16 @@ function RouteComponent() {
 
           {/* Divider */}
           <div className="flex items-center gap-4">
-            <div className="flex-1 h-px bg-white/10" />
-            <span className="text-xs text-slate-600 uppercase tracking-wider">or continue with email</span>
-            <div className="flex-1 h-px bg-white/10" />
+            <div className="flex-1 h-px bg-border" />
+            <span className="text-xs text-muted-foreground uppercase tracking-wider">or continue with email</span>
+            <div className="flex-1 h-px bg-border" />
           </div>
 
           {/* Error */}
           {error && (
-            <div className="p-3.5 bg-red-500/10 border border-red-500/20 rounded-xl flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
-              <p className="text-sm text-red-300">{error}</p>
+            <div className="p-3.5 bg-destructive/10 border border-destructive/20 rounded-xl flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-destructive mt-0.5 shrink-0" />
+              <p className="text-sm text-destructive">{error}</p>
             </div>
           )}
 
@@ -210,18 +210,18 @@ function RouteComponent() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-300 text-sm">Full Name</FormLabel>
+                    <FormLabel className="text-foreground text-sm">Full Name</FormLabel>
                     <FormControl>
                       <div className="relative group">
-                        <User className="absolute left-3.5 top-3 w-4 h-4 text-slate-600 group-focus-within:text-indigo-400 transition-colors" />
+                        <User className="absolute left-3.5 top-3 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                         <Input
                           placeholder="John Doe"
-                          className="pl-10 h-11 bg-white/[0.03] border-white/10 text-white placeholder:text-slate-600 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/25 rounded-xl transition-all"
+                          className="pl-10 h-11 bg-card border-border text-foreground placeholder:text-muted-foreground focus:border-primary/50 focus:ring-1 focus:ring-ring/25 rounded-xl transition-all"
                           {...field}
                         />
                       </div>
                     </FormControl>
-                    <FormMessage className="text-red-400 text-xs" />
+                    <FormMessage className="text-destructive text-xs" />
                   </FormItem>
                 )}
               />
@@ -231,19 +231,19 @@ function RouteComponent() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-300 text-sm">Work Email</FormLabel>
+                    <FormLabel className="text-foreground text-sm">Work Email</FormLabel>
                     <FormControl>
                       <div className="relative group">
-                        <Mail className="absolute left-3.5 top-3 w-4 h-4 text-slate-600 group-focus-within:text-indigo-400 transition-colors" />
+                        <Mail className="absolute left-3.5 top-3 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                         <Input
                           placeholder="name@company.com"
                           type="email"
-                          className="pl-10 h-11 bg-white/[0.03] border-white/10 text-white placeholder:text-slate-600 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/25 rounded-xl transition-all"
+                          className="pl-10 h-11 bg-card border-border text-foreground placeholder:text-muted-foreground focus:border-primary/50 focus:ring-1 focus:ring-ring/25 rounded-xl transition-all"
                           {...field}
                         />
                       </div>
                     </FormControl>
-                    <FormMessage className="text-red-400 text-xs" />
+                    <FormMessage className="text-destructive text-xs" />
                   </FormItem>
                 )}
               />
@@ -253,20 +253,20 @@ function RouteComponent() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-300 text-sm">Password</FormLabel>
+                    <FormLabel className="text-foreground text-sm">Password</FormLabel>
                     <FormControl>
                       <div className="relative group">
-                        <Lock className="absolute left-3.5 top-3 w-4 h-4 text-slate-600 group-focus-within:text-indigo-400 transition-colors" />
+                        <Lock className="absolute left-3.5 top-3 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                         <Input
                           placeholder="Min. 6 characters"
                           type={showPassword ? 'text' : 'password'}
-                          className="pl-10 pr-10 h-11 bg-white/[0.03] border-white/10 text-white placeholder:text-slate-600 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/25 rounded-xl transition-all"
+                          className="pl-10 pr-10 h-11 bg-card border-border text-foreground placeholder:text-muted-foreground focus:border-primary/50 focus:ring-1 focus:ring-ring/25 rounded-xl transition-all"
                           {...field}
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3.5 top-3 text-slate-600 hover:text-slate-400 transition"
+                          className="absolute right-3.5 top-3 text-muted-foreground hover:text-foreground transition"
                         >
                           {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
@@ -277,13 +277,13 @@ function RouteComponent() {
                       <div className="flex items-center gap-2 pt-1">
                         <div className="flex gap-1 flex-1">
                           {[...Array(5)].map((_, i) => (
-                            <div key={i} className={`h-1 flex-1 rounded-full transition-colors ${i < pwStrength ? pwColor : 'bg-white/10'}`} />
+                            <div key={i} className={`h-1 flex-1 rounded-full transition-colors ${i < pwStrength ? pwColor : 'bg-muted'}`} />
                           ))}
                         </div>
-                        <span className="text-[11px] text-slate-500">{pwLabel}</span>
+                        <span className="text-[11px] text-muted-foreground">{pwLabel}</span>
                       </div>
                     )}
-                    <FormMessage className="text-red-400 text-xs" />
+                    <FormMessage className="text-destructive text-xs" />
                   </FormItem>
                 )}
               />
@@ -293,26 +293,26 @@ function RouteComponent() {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-300 text-sm">Confirm Password</FormLabel>
+                    <FormLabel className="text-foreground text-sm">Confirm Password</FormLabel>
                     <FormControl>
                       <div className="relative group">
-                        <Lock className="absolute left-3.5 top-3 w-4 h-4 text-slate-600 group-focus-within:text-indigo-400 transition-colors" />
+                        <Lock className="absolute left-3.5 top-3 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                         <Input
                           placeholder="••••••••"
                           type={showConfirm ? 'text' : 'password'}
-                          className="pl-10 pr-10 h-11 bg-white/[0.03] border-white/10 text-white placeholder:text-slate-600 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/25 rounded-xl transition-all"
+                          className="pl-10 pr-10 h-11 bg-card border-border text-foreground placeholder:text-muted-foreground focus:border-primary/50 focus:ring-1 focus:ring-ring/25 rounded-xl transition-all"
                           {...field}
                         />
                         <button
                           type="button"
                           onClick={() => setShowConfirm(!showConfirm)}
-                          className="absolute right-3.5 top-3 text-slate-600 hover:text-slate-400 transition"
+                          className="absolute right-3.5 top-3 text-muted-foreground hover:text-foreground transition"
                         >
                           {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
                       </div>
                     </FormControl>
-                    <FormMessage className="text-red-400 text-xs" />
+                    <FormMessage className="text-destructive text-xs" />
                   </FormItem>
                 )}
               />
@@ -326,17 +326,17 @@ function RouteComponent() {
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={field.onChange}
-                        className="border-white/20 data-[state=checked]:bg-indigo-500 data-[state=checked]:border-indigo-500 mt-0.5"
+                        className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary mt-0.5"
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel className="text-sm text-slate-400 font-normal cursor-pointer">
+                      <FormLabel className="text-sm text-muted-foreground font-normal cursor-pointer">
                         I agree to the{' '}
-                        <a href="#" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-2">Terms of Service</a>
+                        <a href="#" className="text-primary hover:text-primary/80 underline underline-offset-2">Terms of Service</a>
                         {' '}and{' '}
-                        <a href="#" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-2">Privacy Policy</a>
+                        <a href="#" className="text-primary hover:text-primary/80 underline underline-offset-2">Privacy Policy</a>
                       </FormLabel>
-                      <FormMessage className="text-red-400 text-xs" />
+                      <FormMessage className="text-destructive text-xs" />
                     </div>
                   </FormItem>
                 )}
@@ -345,7 +345,7 @@ function RouteComponent() {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-11 bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-semibold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 rounded-xl transition-all mt-2"
+                className="w-full h-11 bg-linear-to-r from-primary to-chart-2 hover:from-chart-2 hover:to-chart-3 text-primary-foreground font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 rounded-xl transition-all mt-2"
               >
                 {isLoading ? (
                   <div className="flex items-center gap-2">
@@ -363,11 +363,11 @@ function RouteComponent() {
           </Form>
 
           {/* Footer */}
-          <p className="text-center text-sm text-slate-600">
+          <p className="text-center text-sm text-muted-foreground">
             Already have an account?{' '}
             <button
               onClick={() => navigate({ to: '/login' })}
-              className="text-indigo-400 hover:text-indigo-300 font-medium transition"
+              className="text-primary hover:text-primary/80 font-medium transition"
             >
               Sign in
             </button>
