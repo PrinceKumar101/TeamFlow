@@ -9,24 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as DashboardSkeletonRouteImport } from './routes/dashboardSkeleton'
-import { Route as DashBoardRouteImport } from './routes/dashBoard'
 import { Route as CounterRouteImport } from './routes/counter'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as DashboardTestingRouteImport } from './routes/dashboard/testing'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 
-const DashboardSkeletonRoute = DashboardSkeletonRouteImport.update({
-  id: '/dashboardSkeleton',
-  path: '/dashboardSkeleton',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashBoardRoute = DashBoardRouteImport.update({
-  id: '/dashBoard',
-  path: '/dashBoard',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CounterRoute = CounterRouteImport.update({
   id: '/counter',
   path: '/counter',
@@ -37,10 +28,25 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRouteRoute = DashboardRouteRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardTestingRoute = DashboardTestingRouteImport.update({
+  id: '/testing',
+  path: '/testing',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const authSignupRoute = authSignupRouteImport.update({
   id: '/(auth)/signup',
@@ -55,88 +61,77 @@ const authLoginRoute = authLoginRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/counter': typeof CounterRoute
-  '/dashBoard': typeof DashBoardRoute
-  '/dashboardSkeleton': typeof DashboardSkeletonRoute
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
+  '/dashboard/testing': typeof DashboardTestingRoute
+  '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/counter': typeof CounterRoute
-  '/dashBoard': typeof DashBoardRoute
-  '/dashboardSkeleton': typeof DashboardSkeletonRoute
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
+  '/dashboard/testing': typeof DashboardTestingRoute
+  '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/counter': typeof CounterRoute
-  '/dashBoard': typeof DashBoardRoute
-  '/dashboardSkeleton': typeof DashboardSkeletonRoute
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/signup': typeof authSignupRoute
+  '/dashboard/testing': typeof DashboardTestingRoute
+  '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/dashboard'
     | '/about'
     | '/counter'
-    | '/dashBoard'
-    | '/dashboardSkeleton'
     | '/login'
     | '/signup'
+    | '/dashboard/testing'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/counter'
-    | '/dashBoard'
-    | '/dashboardSkeleton'
     | '/login'
     | '/signup'
+    | '/dashboard/testing'
+    | '/dashboard'
   id:
     | '__root__'
     | '/'
+    | '/dashboard'
     | '/about'
     | '/counter'
-    | '/dashBoard'
-    | '/dashboardSkeleton'
     | '/(auth)/login'
     | '/(auth)/signup'
+    | '/dashboard/testing'
+    | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
   CounterRoute: typeof CounterRoute
-  DashBoardRoute: typeof DashBoardRoute
-  DashboardSkeletonRoute: typeof DashboardSkeletonRoute
   authLoginRoute: typeof authLoginRoute
   authSignupRoute: typeof authSignupRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/dashboardSkeleton': {
-      id: '/dashboardSkeleton'
-      path: '/dashboardSkeleton'
-      fullPath: '/dashboardSkeleton'
-      preLoaderRoute: typeof DashboardSkeletonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashBoard': {
-      id: '/dashBoard'
-      path: '/dashBoard'
-      fullPath: '/dashBoard'
-      preLoaderRoute: typeof DashBoardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/counter': {
       id: '/counter'
       path: '/counter'
@@ -151,12 +146,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/testing': {
+      id: '/dashboard/testing'
+      path: '/testing'
+      fullPath: '/dashboard/testing'
+      preLoaderRoute: typeof DashboardTestingRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
     '/(auth)/signup': {
       id: '/(auth)/signup'
@@ -175,12 +191,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface DashboardRouteRouteChildren {
+  DashboardTestingRoute: typeof DashboardTestingRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+}
+
+const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardTestingRoute: DashboardTestingRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+}
+
+const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
+  DashboardRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRouteRoute: DashboardRouteRouteWithChildren,
   AboutRoute: AboutRoute,
   CounterRoute: CounterRoute,
-  DashBoardRoute: DashBoardRoute,
-  DashboardSkeletonRoute: DashboardSkeletonRoute,
   authLoginRoute: authLoginRoute,
   authSignupRoute: authSignupRoute,
 }
