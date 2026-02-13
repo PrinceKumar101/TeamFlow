@@ -8,15 +8,13 @@ export const Route = createFileRoute("/dashboard")({
 
 function RouteComponent() {
   return (
-    <div className="flex flex-row gap-1  min-w-screen w-screen">
-      <aside>
-        <SidebarProvider className="w-1/5">
-          <AppSidebar />
-        </SidebarProvider>
-      </aside>
-      <main className="w-fit">
-        <Outlet />
-      </main>
-    </div>
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full">
+        <AppSidebar />
+        <main className="flex-1 overflow-auto">
+          <Outlet />
+        </main>
+      </div>
+    </SidebarProvider>
   );
 }

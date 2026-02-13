@@ -23,8 +23,7 @@ import {
   Globe,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { useAppDispatch } from "@/hooks/redux";
-import { toggleTheme } from "@/store/slices/themeSlice";
+import ThemSwitcherButton from "@/components/themeSwitcher";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -60,7 +59,6 @@ function RouteComponent() {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -269,13 +267,7 @@ function RouteComponent() {
                 Get Started Free
                 <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
-              <Button
-                onClick={() => {
-                  dispatch(toggleTheme());
-                }}
-              >
-                tog
-              </Button>
+              <ThemSwitcherButton/>
             </div>
 
             {/* Mobile toggle */}

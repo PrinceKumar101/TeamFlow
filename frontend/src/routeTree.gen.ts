@@ -9,20 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as CounterRouteImport } from './routes/counter'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardTestingRouteImport } from './routes/dashboard/testing'
+import { Route as DashboardSprintBacklogRouteImport } from './routes/dashboard/sprintBacklog'
+import { Route as DashboardBacklogRouteImport } from './routes/dashboard/backlog'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 
-const CounterRoute = CounterRouteImport.update({
-  id: '/counter',
-  path: '/counter',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -48,6 +44,16 @@ const DashboardTestingRoute = DashboardTestingRouteImport.update({
   path: '/testing',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
+const DashboardSprintBacklogRoute = DashboardSprintBacklogRouteImport.update({
+  id: '/sprintBacklog',
+  path: '/sprintBacklog',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardBacklogRoute = DashboardBacklogRouteImport.update({
+  id: '/backlog',
+  path: '/backlog',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const authSignupRoute = authSignupRouteImport.update({
   id: '/(auth)/signup',
   path: '/signup',
@@ -63,18 +69,20 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/about': typeof AboutRoute
-  '/counter': typeof CounterRoute
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
+  '/dashboard/backlog': typeof DashboardBacklogRoute
+  '/dashboard/sprintBacklog': typeof DashboardSprintBacklogRoute
   '/dashboard/testing': typeof DashboardTestingRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/counter': typeof CounterRoute
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
+  '/dashboard/backlog': typeof DashboardBacklogRoute
+  '/dashboard/sprintBacklog': typeof DashboardSprintBacklogRoute
   '/dashboard/testing': typeof DashboardTestingRoute
   '/dashboard': typeof DashboardIndexRoute
 }
@@ -83,9 +91,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/about': typeof AboutRoute
-  '/counter': typeof CounterRoute
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/signup': typeof authSignupRoute
+  '/dashboard/backlog': typeof DashboardBacklogRoute
+  '/dashboard/sprintBacklog': typeof DashboardSprintBacklogRoute
   '/dashboard/testing': typeof DashboardTestingRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
@@ -95,18 +104,20 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/about'
-    | '/counter'
     | '/login'
     | '/signup'
+    | '/dashboard/backlog'
+    | '/dashboard/sprintBacklog'
     | '/dashboard/testing'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/counter'
     | '/login'
     | '/signup'
+    | '/dashboard/backlog'
+    | '/dashboard/sprintBacklog'
     | '/dashboard/testing'
     | '/dashboard'
   id:
@@ -114,9 +125,10 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/about'
-    | '/counter'
     | '/(auth)/login'
     | '/(auth)/signup'
+    | '/dashboard/backlog'
+    | '/dashboard/sprintBacklog'
     | '/dashboard/testing'
     | '/dashboard/'
   fileRoutesById: FileRoutesById
@@ -125,20 +137,12 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
-  CounterRoute: typeof CounterRoute
   authLoginRoute: typeof authLoginRoute
   authSignupRoute: typeof authSignupRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/counter': {
-      id: '/counter'
-      path: '/counter'
-      fullPath: '/counter'
-      preLoaderRoute: typeof CounterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -174,6 +178,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardTestingRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/dashboard/sprintBacklog': {
+      id: '/dashboard/sprintBacklog'
+      path: '/sprintBacklog'
+      fullPath: '/dashboard/sprintBacklog'
+      preLoaderRoute: typeof DashboardSprintBacklogRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/backlog': {
+      id: '/dashboard/backlog'
+      path: '/backlog'
+      fullPath: '/dashboard/backlog'
+      preLoaderRoute: typeof DashboardBacklogRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/(auth)/signup': {
       id: '/(auth)/signup'
       path: '/signup'
@@ -192,11 +210,15 @@ declare module '@tanstack/react-router' {
 }
 
 interface DashboardRouteRouteChildren {
+  DashboardBacklogRoute: typeof DashboardBacklogRoute
+  DashboardSprintBacklogRoute: typeof DashboardSprintBacklogRoute
   DashboardTestingRoute: typeof DashboardTestingRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardBacklogRoute: DashboardBacklogRoute,
+  DashboardSprintBacklogRoute: DashboardSprintBacklogRoute,
   DashboardTestingRoute: DashboardTestingRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
@@ -209,7 +231,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
   AboutRoute: AboutRoute,
-  CounterRoute: CounterRoute,
   authLoginRoute: authLoginRoute,
   authSignupRoute: authSignupRoute,
 }

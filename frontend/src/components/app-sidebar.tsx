@@ -29,6 +29,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Link } from "@tanstack/react-router";
+import ThemSwitcherButton from "./themeSwitcher";
 
 const data = {
   user: {
@@ -126,7 +127,12 @@ const data = {
   documents: [
     {
       name: "Backlog",
-      url: "#",
+      url: "/dashboard/backlog",
+      icon: IconDatabase,
+    },
+    {
+      name: "Sprint Backlog",
+      url: "/dashboard/sprintBacklog",
       icon: IconDatabase,
     },
     {
@@ -148,17 +154,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:p-1.5!"
-            >
-              <Link to={"/"}>
-                <img src="/logo.png" className="size-7 object-center" />
-                <span className="text-base font-semibold ">
-                  {import.meta.env.VITE_APP_NAME}
-                </span>
-              </Link>
-            </SidebarMenuButton>
+            <div className="flex items-center justify-between">
+              <SidebarMenuButton
+                asChild
+                className="data-[slot=sidebar-menu-button]:p-1.5!"
+              >
+                <Link to="/">
+                  <div className="flex items-center gap-2">
+                    <img src="/logo.png" className="size-7 object-center" />
+                    <span className="text-base font-semibold">
+                      {import.meta.env.VITE_APP_NAME}
+                    </span>
+                  </div>
+                </Link>
+              </SidebarMenuButton>
+
+              <ThemSwitcherButton />
+            </div>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
