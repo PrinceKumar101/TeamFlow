@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -24,6 +24,8 @@ import {
   Star,
 } from "lucide-react";
 import { useState } from "react";
+import { useLoginMutation } from "@/hooks/useAuth";
+import { isAxiosError } from "axios";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -33,14 +35,26 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export const Route = createFileRoute("/(auth)/login")({
+  beforeLoad: async () => {
+    const { default: store } = await import("@/store/store");
+    if (store.getState().auth.isAuthenticated) {
+      throw redirect({ to: "/dashboard" });
+    }
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const loginMutation = useLoginMutation();
+
+  const isLoading = loginMutation.isPending;
+  const error = loginMutation.isError
+    ? (isAxiosError(loginMutation.error)
+        ? loginMutation.error.response?.data?.message
+        : loginMutation.error?.message) ?? "An error occurred"
+    : null;
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -50,29 +64,12 @@ function RouteComponent() {
     },
   });
 
-  async function onSubmit(values: LoginFormValues) {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || "Login failed");
-      }
-
-      const data = await response.json();
-      localStorage.setItem("token", data.token);
-      navigate({ to: "/" });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
-    }
+  function onSubmit(values: LoginFormValues) {
+    loginMutation.mutate(values, {
+      onSuccess: () => {
+        navigate({ to: "/dashboard" });
+      },
+    });
   }
 
   return (

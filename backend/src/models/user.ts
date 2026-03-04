@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import { string } from 'zod';
+import { GlobalRole } from '../types/role.type.js';
 
 const { Schema } = mongoose;
 
@@ -42,10 +44,16 @@ const userSchema = new Schema(
     passwordChangedAt: {
       type: Date,
     },
+    role: {
+      type: String,
+      enum: GlobalRole,
+      default: GlobalRole.USER,
+    },
   },
   {
     timestamps: true,
   },
 );
 
-export const User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+export default User;

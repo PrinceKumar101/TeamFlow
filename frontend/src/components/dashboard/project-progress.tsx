@@ -1,4 +1,3 @@
-import { IconUsers } from "@tabler/icons-react";
 import {
   Card,
   CardContent,
@@ -29,9 +28,12 @@ export function ProjectProgress({ projects }: ProjectProgressProps) {
         <ScrollArea className="h-[300px]">
           <div className="divide-y">
             {projects.map((project) => {
-              const percentage = Math.round(
-                (project.completedTasks / project.totalTasks) * 100
-              );
+              const percentage =
+                project.totalTasks > 0
+                  ? Math.round(
+                      (project.completedTasks / project.totalTasks) * 100
+                    )
+                  : 0;
               return (
                 <div
                   key={project.id}
@@ -47,10 +49,6 @@ export function ProjectProgress({ projects }: ProjectProgressProps) {
                         {project.name}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <IconUsers className="h-3.5 w-3.5" />
-                      <span>{project.members}</span>
-                    </div>
                   </div>
 
                   <div className="space-y-1">
@@ -65,6 +63,11 @@ export function ProjectProgress({ projects }: ProjectProgressProps) {
                 </div>
               );
             })}
+            {projects.length === 0 && (
+              <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
+                No projects yet
+              </div>
+            )}
           </div>
         </ScrollArea>
       </CardContent>

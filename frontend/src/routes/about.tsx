@@ -1,17 +1,31 @@
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { useAppSelector } from '@/hooks/redux'
 import { createFileRoute } from '@tanstack/react-router'
-import { Button } from '../components/ui/button'
 
 export const Route = createFileRoute('/about')({
   component: RouteComponent,
 })
 
-const clickme = ()=> alert("Hey there");
 
 function RouteComponent() {
+  const todo = useAppSelector(state => state.todo)
   return (
     <>
     <div>
-      <Button onClick={clickme}>Click me</Button>
+      {todo.map((item)=>{
+        return (
+          <div key={item.id}>
+            <h1>{item.id}</h1>
+            <p>{item.task}</p>
+            <p>{item.completed}</p>
+          </div>
+        )
+      })}
+    </div>
+    <div>
+      <Input placeholder='Enter todo name'/>
+      <Button>Add Todo</Button>
     </div>
     
     </>

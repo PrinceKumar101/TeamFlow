@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -8,6 +8,8 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Mail, Lock, User, AlertCircle, Flag, ArrowRight, Github, Eye, EyeOff, CheckCircle2, Zap, Shield, Users } from 'lucide-react'
 import { useState } from 'react'
+import { useSignupMutation } from '@/hooks/useAuth'
+import { isAxiosError } from 'axios'
 
 const signupSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -25,15 +27,27 @@ const signupSchema = z.object({
 type SignupFormValues = z.infer<typeof signupSchema>
 
 export const Route = createFileRoute('/(auth)/signup')({
+  beforeLoad: async () => {
+    const { default: store } = await import('@/store/store');
+    if (store.getState().auth.isAuthenticated) {
+      throw redirect({ to: '/dashboard' });
+    }
+  },
   component: RouteComponent,
 })
 
 function RouteComponent() {
   const navigate = useNavigate()
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  const signupMutation = useSignupMutation()
+
+  const isLoading = signupMutation.isPending
+  const error = signupMutation.isError
+    ? (isAxiosError(signupMutation.error)
+        ? signupMutation.error.response?.data?.message
+        : signupMutation.error?.message) ?? 'An error occurred'
+    : null
 
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
@@ -60,33 +74,19 @@ function RouteComponent() {
   const pwLabel = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Very strong'][pwStrength] ?? ''
   const pwColor = ['bg-muted', 'bg-red-500', 'bg-orange-500', 'bg-amber-500', 'bg-emerald-500', 'bg-emerald-400'][pwStrength]
 
-  async function onSubmit(values: SignupFormValues) {
-    setIsLoading(true)
-    setError(null)
-    try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: values.name,
-          email: values.email,
-          password: values.password,
-        }),
-      })
-
-      if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.message || 'Signup failed')
-      }
-
-      const data = await response.json()
-      localStorage.setItem('token', data.token)
-      navigate({ to: '/' })
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-    } finally {
-      setIsLoading(false)
-    }
+  function onSubmit(values: SignupFormValues) {
+    signupMutation.mutate(
+      {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      },
+      {
+        onSuccess: () => {
+          navigate({ to: '/dashboard' })
+        },
+      },
+    )
   }
 
   return (

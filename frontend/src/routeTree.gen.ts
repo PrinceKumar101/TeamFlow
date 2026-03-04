@@ -14,10 +14,14 @@ import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardTestingRouteImport } from './routes/dashboard/testing'
+import { Route as DashboardTasksRouteImport } from './routes/dashboard/tasks'
 import { Route as DashboardSprintBacklogRouteImport } from './routes/dashboard/sprintBacklog'
+import { Route as DashboardProjectsRouteImport } from './routes/dashboard/projects'
 import { Route as DashboardBacklogRouteImport } from './routes/dashboard/backlog'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as DashboardProjectsIndexRouteImport } from './routes/dashboard/projects.index'
+import { Route as DashboardProjectsProjectIdRouteImport } from './routes/dashboard/projects.$projectId'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
@@ -44,9 +48,19 @@ const DashboardTestingRoute = DashboardTestingRouteImport.update({
   path: '/testing',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
+const DashboardTasksRoute = DashboardTasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const DashboardSprintBacklogRoute = DashboardSprintBacklogRouteImport.update({
   id: '/sprintBacklog',
   path: '/sprintBacklog',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardProjectsRoute = DashboardProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardBacklogRoute = DashboardBacklogRouteImport.update({
@@ -64,6 +78,17 @@ const authLoginRoute = authLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardProjectsIndexRoute = DashboardProjectsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardProjectsRoute,
+} as any)
+const DashboardProjectsProjectIdRoute =
+  DashboardProjectsProjectIdRouteImport.update({
+    id: '/$projectId',
+    path: '/$projectId',
+    getParentRoute: () => DashboardProjectsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -72,9 +97,13 @@ export interface FileRoutesByFullPath {
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
   '/dashboard/backlog': typeof DashboardBacklogRoute
+  '/dashboard/projects': typeof DashboardProjectsRouteWithChildren
   '/dashboard/sprintBacklog': typeof DashboardSprintBacklogRoute
+  '/dashboard/tasks': typeof DashboardTasksRoute
   '/dashboard/testing': typeof DashboardTestingRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/projects/$projectId': typeof DashboardProjectsProjectIdRoute
+  '/dashboard/projects/': typeof DashboardProjectsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -83,8 +112,11 @@ export interface FileRoutesByTo {
   '/signup': typeof authSignupRoute
   '/dashboard/backlog': typeof DashboardBacklogRoute
   '/dashboard/sprintBacklog': typeof DashboardSprintBacklogRoute
+  '/dashboard/tasks': typeof DashboardTasksRoute
   '/dashboard/testing': typeof DashboardTestingRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/projects/$projectId': typeof DashboardProjectsProjectIdRoute
+  '/dashboard/projects': typeof DashboardProjectsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -94,9 +126,13 @@ export interface FileRoutesById {
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/signup': typeof authSignupRoute
   '/dashboard/backlog': typeof DashboardBacklogRoute
+  '/dashboard/projects': typeof DashboardProjectsRouteWithChildren
   '/dashboard/sprintBacklog': typeof DashboardSprintBacklogRoute
+  '/dashboard/tasks': typeof DashboardTasksRoute
   '/dashboard/testing': typeof DashboardTestingRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/projects/$projectId': typeof DashboardProjectsProjectIdRoute
+  '/dashboard/projects/': typeof DashboardProjectsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -107,9 +143,13 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/dashboard/backlog'
+    | '/dashboard/projects'
     | '/dashboard/sprintBacklog'
+    | '/dashboard/tasks'
     | '/dashboard/testing'
     | '/dashboard/'
+    | '/dashboard/projects/$projectId'
+    | '/dashboard/projects/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -118,8 +158,11 @@ export interface FileRouteTypes {
     | '/signup'
     | '/dashboard/backlog'
     | '/dashboard/sprintBacklog'
+    | '/dashboard/tasks'
     | '/dashboard/testing'
     | '/dashboard'
+    | '/dashboard/projects/$projectId'
+    | '/dashboard/projects'
   id:
     | '__root__'
     | '/'
@@ -128,9 +171,13 @@ export interface FileRouteTypes {
     | '/(auth)/login'
     | '/(auth)/signup'
     | '/dashboard/backlog'
+    | '/dashboard/projects'
     | '/dashboard/sprintBacklog'
+    | '/dashboard/tasks'
     | '/dashboard/testing'
     | '/dashboard/'
+    | '/dashboard/projects/$projectId'
+    | '/dashboard/projects/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -178,11 +225,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardTestingRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/dashboard/tasks': {
+      id: '/dashboard/tasks'
+      path: '/tasks'
+      fullPath: '/dashboard/tasks'
+      preLoaderRoute: typeof DashboardTasksRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/dashboard/sprintBacklog': {
       id: '/dashboard/sprintBacklog'
       path: '/sprintBacklog'
       fullPath: '/dashboard/sprintBacklog'
       preLoaderRoute: typeof DashboardSprintBacklogRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/projects': {
+      id: '/dashboard/projects'
+      path: '/projects'
+      fullPath: '/dashboard/projects'
+      preLoaderRoute: typeof DashboardProjectsRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/backlog': {
@@ -206,19 +267,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/projects/': {
+      id: '/dashboard/projects/'
+      path: '/'
+      fullPath: '/dashboard/projects/'
+      preLoaderRoute: typeof DashboardProjectsIndexRouteImport
+      parentRoute: typeof DashboardProjectsRoute
+    }
+    '/dashboard/projects/$projectId': {
+      id: '/dashboard/projects/$projectId'
+      path: '/$projectId'
+      fullPath: '/dashboard/projects/$projectId'
+      preLoaderRoute: typeof DashboardProjectsProjectIdRouteImport
+      parentRoute: typeof DashboardProjectsRoute
+    }
   }
 }
 
+interface DashboardProjectsRouteChildren {
+  DashboardProjectsProjectIdRoute: typeof DashboardProjectsProjectIdRoute
+  DashboardProjectsIndexRoute: typeof DashboardProjectsIndexRoute
+}
+
+const DashboardProjectsRouteChildren: DashboardProjectsRouteChildren = {
+  DashboardProjectsProjectIdRoute: DashboardProjectsProjectIdRoute,
+  DashboardProjectsIndexRoute: DashboardProjectsIndexRoute,
+}
+
+const DashboardProjectsRouteWithChildren =
+  DashboardProjectsRoute._addFileChildren(DashboardProjectsRouteChildren)
+
 interface DashboardRouteRouteChildren {
   DashboardBacklogRoute: typeof DashboardBacklogRoute
+  DashboardProjectsRoute: typeof DashboardProjectsRouteWithChildren
   DashboardSprintBacklogRoute: typeof DashboardSprintBacklogRoute
+  DashboardTasksRoute: typeof DashboardTasksRoute
   DashboardTestingRoute: typeof DashboardTestingRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardBacklogRoute: DashboardBacklogRoute,
+  DashboardProjectsRoute: DashboardProjectsRouteWithChildren,
   DashboardSprintBacklogRoute: DashboardSprintBacklogRoute,
+  DashboardTasksRoute: DashboardTasksRoute,
   DashboardTestingRoute: DashboardTestingRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }

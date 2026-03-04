@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "../components/ui/button";
 import {
   CheckCircle2,
@@ -226,13 +226,15 @@ function RouteComponent() {
             {/* Logo */}
             <div
               className="flex items-center gap-2.5 group cursor-pointer"
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            >
-              <div className="w-9 h-9 rounded-xl bg-linear-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/25 group-hover:shadow-primary/40 transition-shadow">
-                <Flag className="w-5 h-5 text-white" />
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} >
+              <Link  to="/">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg shadow-primary/25 group-hover:shadow-primary/40 transition-shadow">
+              <img src="/logo.png" className=" size-6"/>
               </div>
+              </Link>
               <span className="text-xl font-bold tracking-tight">TeamFlow</span>
             </div>
+
 
             {/* Desktop links */}
             <div className="hidden md:flex items-center gap-1">

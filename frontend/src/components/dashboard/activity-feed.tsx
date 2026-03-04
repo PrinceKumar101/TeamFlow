@@ -46,20 +46,20 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
               >
                 <Avatar className="mt-0.5 h-7 w-7 shrink-0">
                   <AvatarFallback className="text-[10px] font-medium">
-                    {getInitials(activity.user.name)}
+                    {getInitials(activity.user)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1 space-y-0.5">
                   <p className="text-sm leading-snug">
-                    <span className="font-medium">{activity.user.name}</span>{" "}
+                    <span className="font-medium">{activity.user}</span>{" "}
                     <span className="text-muted-foreground">
                       {activity.action}
                     </span>{" "}
                     <span className="font-medium">{activity.target}</span>
                   </p>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span>{activity.project}</span>
-                    <span>·</span>
+                    {activity.project && <span>{activity.project}</span>}
+                    {activity.project && <span>·</span>}
                     <span>
                       {formatDistanceToNow(parseISO(activity.timestamp), {
                         addSuffix: true,
@@ -69,6 +69,11 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
                 </div>
               </div>
             ))}
+            {activities.length === 0 && (
+              <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
+                No activity yet
+              </div>
+            )}
           </div>
         </ScrollArea>
       </CardContent>

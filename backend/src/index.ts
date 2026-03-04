@@ -2,8 +2,14 @@ import express from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
-import { userRoutes } from './routes/users.js';
+import connectDb from './config/db.js';
+import {
+  errorMiddleware,
+} from './utils/utilityFunctions.js';
+import router from './routes/index.js';
+import { seedDummyUsers } from './seeds/users.seed.js';
 
 const app = express();
 
@@ -11,6 +17,7 @@ dotenv.config();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.use(
   cors({
@@ -18,10 +25,11 @@ app.use(
     credentials: true,
   }),
 );
-
+connectDb().then(() => seedDummyUsers()).catch(console.error);
 app.use(morgan('dev'));
 
-app.use("/api-v1", userRoutes);
+app.use("/api-v1", router)
+app.use(errorMiddleware);
 
 const port = process.env.PORT || 3000;
 

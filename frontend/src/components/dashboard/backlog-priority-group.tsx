@@ -22,13 +22,13 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { StatusBadge } from "@/components/dashboard/task-badges";
 import { cn } from "@/lib/utils";
-import type { Task, TaskPriority } from "@/types/dashboard";
+import type { TaskWithProject } from "@/hooks/useAllTasks";
+import type { TaskPriority, TaskStatus } from "@/types/project";
 
 interface BacklogPriorityGroupProps {
   priority: TaskPriority;
-  tasks: Task[];
+  tasks: TaskWithProject[];
 }
 
 const priorityMeta: Record<
@@ -42,7 +42,7 @@ const priorityMeta: Record<
     countClass: string;
   }
 > = {
-  critical: {
+  CRITICAL: {
     label: "Critical",
     icon: IconAlertOctagon,
     iconClass: "text-red-500",
@@ -50,7 +50,7 @@ const priorityMeta: Record<
     bgClass: "bg-red-50 dark:bg-red-950/30",
     countClass: "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300",
   },
-  high: {
+  HIGH: {
     label: "High",
     icon: IconArrowUp,
     iconClass: "text-orange-500",
@@ -59,7 +59,7 @@ const priorityMeta: Record<
     countClass:
       "bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300",
   },
-  medium: {
+  MEDIUM: {
     label: "Medium",
     icon: IconMinus,
     iconClass: "text-yellow-500",
@@ -68,7 +68,7 @@ const priorityMeta: Record<
     countClass:
       "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300",
   },
-  low: {
+  LOW: {
     label: "Low",
     icon: IconArrowDown,
     iconClass: "text-green-500",
@@ -76,6 +76,29 @@ const priorityMeta: Record<
     bgClass: "bg-green-50 dark:bg-green-950/30",
     countClass:
       "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300",
+  },
+};
+
+const statusStyles: Record<TaskStatus, { label: string; className: string }> = {
+  TODO: {
+    label: "To Do",
+    className:
+      "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700",
+  },
+  IN_PROGRESS: {
+    label: "In Progress",
+    className:
+      "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400 border-blue-200 dark:border-blue-800",
+  },
+  DONE: {
+    label: "Done",
+    className:
+      "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
+  },
+  BLOCKED: {
+    label: "Blocked",
+    className:
+      "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400 border-red-200 dark:border-red-800",
   },
 };
 
@@ -137,17 +160,19 @@ export function BacklogPriorityGroup({
           <CardContent className="p-0">
             {/* Table header */}
             <div className="hidden border-b bg-muted/30 px-4 py-2 text-xs font-medium text-muted-foreground sm:grid sm:grid-cols-12 sm:gap-3">
-              <span className="col-span-1">ID</span>
               <span className="col-span-4">Title</span>
               <span className="col-span-2">Status</span>
-              <span className="col-span-2">Project</span>
+              <span className="col-span-3">Project</span>
               <span className="col-span-1">Assignee</span>
               <span className="col-span-2 text-right">Due Date</span>
             </div>
 
             <div className="divide-y">
               {tasks.map((task) => (
-                <BacklogRow key={task.id} task={task} />
+                <BacklogRow
+                  key={task._id}
+                  task={task}
+                />
               ))}
             </div>
           </CardContent>
@@ -157,73 +182,66 @@ export function BacklogPriorityGroup({
   );
 }
 
-function BacklogRow({ task }: { task: Task }) {
+function BacklogRow({ task }: { task: TaskWithProject }) {
+  const status = statusStyles[task.status];
+
   return (
     <div className="group grid grid-cols-1 gap-2 px-4 py-3 transition-colors hover:bg-muted/40 sm:grid-cols-12 sm:items-center sm:gap-3">
-      {/* ID */}
-      <span className="col-span-1 font-mono text-xs text-muted-foreground">
-        {task.id}
-      </span>
-
-      {/* Title + description + tags (mobile: full row, desktop: 4 cols) */}
-      <div className="col-span-4 min-w-0 space-y-1">
+      {/* Title + description */}
+      <div className="col-span-4 min-w-0 space-y-0.5">
         <p className="truncate text-sm font-medium leading-snug">
           {task.title}
         </p>
-        <p className="hidden truncate text-xs text-muted-foreground lg:block">
-          {task.description}
-        </p>
-        <div className="flex flex-wrap gap-1">
-          {task.tags.map((tag) => (
-            <Badge
-              key={tag}
-              variant="outline"
-              className="px-1.5 py-0 text-[10px] font-normal text-muted-foreground"
-            >
-              {tag}
-            </Badge>
-          ))}
-        </div>
+        {task.description && (
+          <p className="hidden truncate text-xs text-muted-foreground lg:block">
+            {task.description}
+          </p>
+        )}
       </div>
 
       {/* Status */}
       <div className="col-span-2">
-        <StatusBadge status={task.status} />
+        <Badge
+          variant="outline"
+          className={cn("text-xs font-medium", status.className)}
+        >
+          {status.label}
+        </Badge>
       </div>
 
       {/* Project */}
-      <div className="col-span-2">
-        <span
-          className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-medium"
-          style={{
-            backgroundColor: `${task.projectColor}15`,
-            color: task.projectColor,
-          }}
-        >
-          <span
-            className="h-1.5 w-1.5 rounded-full"
-            style={{ backgroundColor: task.projectColor }}
-          />
-          {task.project}
-        </span>
+      <div className="col-span-3">
+        <Badge variant="secondary" className="text-xs font-medium">
+          {task.projectName}
+        </Badge>
       </div>
 
       {/* Assignee */}
       <div className="col-span-1 flex items-center">
-        <Avatar className="h-6 w-6">
-          <AvatarFallback className="text-[9px] font-medium">
-            {getInitials(task.assignee.name)}
-          </AvatarFallback>
-        </Avatar>
-        <span className="ml-1.5 truncate text-xs text-muted-foreground sm:hidden">
-          {task.assignee.name}
-        </span>
+        {task.assignedTo && (
+          <>
+            <Avatar className="h-6 w-6">
+              <AvatarFallback className="text-[9px] font-medium">
+                {getInitials(task.assignedTo.name)}
+              </AvatarFallback>
+            </Avatar>
+            <span className="ml-1.5 truncate text-xs text-muted-foreground sm:hidden">
+              {task.assignedTo.name}
+            </span>
+          </>
+        )}
       </div>
 
       {/* Due Date */}
-      <div className="col-span-2 flex items-center justify-end gap-1 text-xs text-muted-foreground sm:justify-end">
-        <IconCalendar className="h-3 w-3" />
-        <span>{format(parseISO(task.dueDate), "MMM d, yyyy")}</span>
+      <div className="col-span-2 flex items-center justify-end gap-1 text-xs text-muted-foreground">
+        {task.dueDate ? (
+          <>
+            <IconCalendar className="h-3 w-3" />
+            <span>{format(parseISO(task.dueDate), "MMM d, yyyy")}</span>
+          </>
+        ) : (
+          <span className="italic">No date</span>
+        )}
       </div>
     </div>
   );

@@ -16,49 +16,43 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { BacklogPriorityGroup } from "@/components/dashboard/backlog-priority-group";
-import { backlogTasks } from "@/data/dashboard-data";
-import type { TaskPriority } from "@/types/dashboard";
+import { BacklogCreateTaskDialog } from "@/components/dashboard/dialogs/backlog-create-task-dialog";
+import type { TaskPriority } from "@/types/project";
+import { useAllTasks } from "@/hooks/useAllTasks";
 
 export const Route = createFileRoute("/dashboard/backlog")({
   component: BacklogPage,
 });
 
-const priorityOrder: TaskPriority[] = ["critical", "high", "medium", "low"];
+const priorityOrder: TaskPriority[] = ["CRITICAL", "HIGH", "MEDIUM", "LOW"];
 
 function BacklogPage() {
+  const { tasks, projects, isLoading } = useAllTasks();
   const [search, setSearch] = useState("");
   const [projectFilter, setProjectFilter] = useState("all");
 
-  // Unique projects for filter
-  const projects = useMemo(() => {
-    const set = new Set(backlogTasks.map((t) => t.project));
-    return Array.from(set).sort();
-  }, []);
-
   // Filter tasks
   const filteredTasks = useMemo(() => {
-    return backlogTasks.filter((task) => {
+    return tasks.filter((task) => {
       const matchesSearch =
         search === "" ||
         task.title.toLowerCase().includes(search.toLowerCase()) ||
-        task.id.toLowerCase().includes(search.toLowerCase()) ||
-        task.tags.some((tag) =>
-          tag.toLowerCase().includes(search.toLowerCase())
-        );
+        (task.description ?? "").toLowerCase().includes(search.toLowerCase());
       const matchesProject =
-        projectFilter === "all" || task.project === projectFilter;
+        projectFilter === "all" || task.projectId === projectFilter;
       return matchesSearch && matchesProject;
     });
-  }, [search, projectFilter]);
+  }, [tasks, search, projectFilter]);
 
   // Group by priority
   const groupedByPriority = useMemo(() => {
     const groups: Record<TaskPriority, typeof filteredTasks> = {
-      critical: [],
-      high: [],
-      medium: [],
-      low: [],
+      CRITICAL: [],
+      HIGH: [],
+      MEDIUM: [],
+      LOW: [],
     };
     filteredTasks.forEach((task) => {
       groups[task.priority].push(task);
@@ -68,10 +62,10 @@ function BacklogPage() {
 
   const totalCount = filteredTasks.length;
 
-  return (
-    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8">
-      {/* Page header */}
-      <div className="flex flex-col gap-1">
+  /* ── Loading state ───────────────────────────────────────────── */
+  if (isLoading) {
+    return (
+      <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8">
         <div className="flex items-center gap-2.5">
           <div className="rounded-lg bg-primary/10 p-2">
             <IconLayoutList className="h-5 w-5 text-primary" />
@@ -84,6 +78,71 @@ function BacklogPage() {
               All tasks organized by priority
             </p>
           </div>
+        </div>
+        <div className="space-y-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} className="h-40 w-full rounded-xl" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  /* ── Empty state ─────────────────────────────────────────────── */
+  if (tasks.length === 0) {
+    return (
+      <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="rounded-lg bg-primary/10 p-2">
+              <IconLayoutList className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold tracking-tight sm:text-2xl">
+                Backlog
+              </h1>
+              <p className="text-xs text-muted-foreground sm:text-sm">
+                All tasks organized by priority
+              </p>
+            </div>
+          </div>
+          <BacklogCreateTaskDialog projects={projects} />
+        </div>
+        <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
+          <IconLayoutList className="h-12 w-12 text-muted-foreground/40" />
+          <p className="text-sm font-medium text-muted-foreground">
+            Backlog is empty
+          </p>
+          <p className="text-xs text-muted-foreground max-w-xs">
+            {projects.length === 0
+              ? "Create a project first, then add tasks to your backlog."
+              : "Add tasks to a project to start building your backlog."}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── Main view ───────────────────────────────────────────────── */
+  return (
+    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8">
+      {/* Page header */}
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="rounded-lg bg-primary/10 p-2">
+              <IconLayoutList className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold tracking-tight sm:text-2xl">
+                Backlog
+              </h1>
+              <p className="text-xs text-muted-foreground sm:text-sm">
+                All tasks organized by priority
+              </p>
+            </div>
+          </div>
+          <BacklogCreateTaskDialog projects={projects} />
         </div>
       </div>
 
@@ -112,8 +171,8 @@ function BacklogPage() {
             <SelectContent>
               <SelectItem value="all">All Projects</SelectItem>
               {projects.map((project) => (
-                <SelectItem key={project} value={project}>
-                  {project}
+                <SelectItem key={project._id} value={project._id}>
+                  {project.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -147,13 +206,13 @@ function BacklogPage() {
       {/* Priority groups */}
       <div className="flex flex-col gap-4">
         {priorityOrder.map((priority) => {
-          const tasks = groupedByPriority[priority];
-          if (tasks.length === 0) return null;
+          const priorityTasks = groupedByPriority[priority];
+          if (priorityTasks.length === 0) return null;
           return (
             <BacklogPriorityGroup
               key={priority}
               priority={priority}
-              tasks={tasks}
+              tasks={priorityTasks}
             />
           );
         })}
