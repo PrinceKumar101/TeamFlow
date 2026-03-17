@@ -7,9 +7,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm -rf ./node_modules ./dist && npm i",
+    "build": "tsc -p tsconfig.json",
     "dev": "concurrently \"npx nodemon ./dist/index.js \" \"npx tsc --w\" ",
-    "start": "npx nodemon ./dist/index.js",
-    "prestart": "tsc"
+    "start": "node ./dist/index.js"
   },
   "keywords": [],
   "author": "",
