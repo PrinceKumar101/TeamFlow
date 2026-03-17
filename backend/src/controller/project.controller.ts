@@ -4,6 +4,7 @@ import { HTTP_STATUS } from '../utils/httpStatusCode.js';
 import {
   addProjectMemberService,
   createProjectService,
+  deleteProjectService,
   getMyProjectsService,
   getProjectByIdService,
 } from '../services/project.services.js';
@@ -12,8 +13,9 @@ import {
   CreateProjectInput,
 } from '../types/zod.project.js';
 import { sendSuccessResponse } from '../utils/utilityFunctions.js';
+import { controllerType } from '../types/controller.types.js';
 
-export const getMyProjectsController = async (req: Request, res: Response) => {
+export const getMyProjectsController: controllerType = async (req, res) => {
   const projects = await getMyProjectsService(req.userId!, req.userRole!);
 
   sendSuccessResponse(
@@ -24,7 +26,7 @@ export const getMyProjectsController = async (req: Request, res: Response) => {
   );
 };
 
-export const createProjectController = async (req: Request, res: Response) => {
+export const createProjectController: controllerType = async (req, res) => {
   const { name, description } = req?.validatedData as CreateProjectInput;
 
   const project = await createProjectService({
@@ -41,12 +43,9 @@ export const createProjectController = async (req: Request, res: Response) => {
   );
 };
 
-export const addProjectMemberController = async (
-  req: Request,
-  res: Response,
-) => {
+export const addProjectMemberController: controllerType = async (req, res) => {
   const { projectId } = req.params as { projectId: string };
-  
+
   const { userId, email, role } = req?.validatedData as AddProjectMemberBody;
 
   const updatedProject = await addProjectMemberService({
@@ -65,10 +64,7 @@ export const addProjectMemberController = async (
   );
 };
 
-export const getProjectByIdController = async (
-  req: Request,
-  res: Response
-) => {
+export const getProjectByIdController: controllerType = async (req, res) => {
   const { projectId } = req.params as { projectId: string };
 
   const project = await getProjectByIdService({
@@ -77,5 +73,11 @@ export const getProjectByIdController = async (
     requesterRole: req.userRole!,
   });
 
- sendSuccessResponse(res, HTTP_STATUS.OK, "Project found", project);
+  sendSuccessResponse(res, HTTP_STATUS.OK, 'Project found', project);
+};
+
+export const deleteProjectController: controllerType = async (req, res) => {
+  const { projectId } = req.params as { projectId: string };
+  await deleteProjectService({ projectId });
+  sendSuccessResponse(res, HTTP_STATUS.OK, 'Project deleted successfully', {});
 };

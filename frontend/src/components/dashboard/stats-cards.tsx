@@ -46,7 +46,11 @@ export function StatsCards({ stats }: StatsCardsProps) {
   return (
     <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
       {statItems.map((item) => (
-        <Card key={item.key} className="gap-0 py-4">
+        <Card
+          key={item.key}
+          className="group relative gap-0 overflow-hidden border-border/70 py-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+        >
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/80 via-primary/40 to-transparent" />
           <CardContent className="px-4 pb-0">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
@@ -57,7 +61,9 @@ export function StatsCards({ stats }: StatsCardsProps) {
                   {stats[item.key]}
                 </p>
               </div>
-              <div className={`rounded-lg p-2 ${item.bgColor}`}>
+              <div
+                className={`rounded-xl p-2.5 shadow-inner transition-transform group-hover:scale-105 ${item.bgColor}`}
+              >
                 <item.icon className={`h-5 w-5 ${item.color}`} />
               </div>
             </div>

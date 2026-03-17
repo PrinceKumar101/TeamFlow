@@ -8,7 +8,7 @@ import {
   getSingleTaskController,
   updateTaskStatusController,
   deleteTaskController,
-} from '../controller/task.js';
+} from '../controller/task.controller.js';
 
 import {
   createTaskZodSchema,

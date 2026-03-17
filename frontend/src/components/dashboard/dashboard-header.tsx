@@ -21,9 +21,9 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex items-center gap-3">
-        <Avatar className="h-10 w-10 sm:h-12 sm:w-12">
-          <AvatarFallback className="bg-primary text-sm font-semibold text-primary-foreground">
+      <div className="flex items-center gap-3 sm:gap-4">
+        <Avatar className="h-11 w-11 ring-2 ring-primary/20 sm:h-12 sm:w-12">
+          <AvatarFallback className="bg-gradient-to-br from-primary to-primary/70 text-sm font-semibold text-primary-foreground">
             {userName
               .split(" ")
               .map((n) => n[0])
@@ -31,7 +31,10 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
               .toUpperCase()}
           </AvatarFallback>
         </Avatar>
-        <div>
+        <div className="space-y-1">
+          <p className="inline-flex w-fit items-center rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+            Daily Overview
+          </p>
           <h1 className="text-lg font-bold tracking-tight sm:text-2xl">
             {getGreeting()}, {userName}
           </h1>

@@ -6,8 +6,8 @@ import {
   loginUserController,
   logoutController,
   registerUserController,
-} from '../controller/auth.js';
-import { getAllUsersController } from '../controller/user.js';
+} from '../controller/auth.controller.js';
+import { getAllUsersController } from '../controller/user.controller.js';
 import { asyncHandler } from '../utils/utilityFunctions.js';
 
 const router = express.Router();

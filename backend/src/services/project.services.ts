@@ -1,11 +1,18 @@
-import Project from '../models/project.js';
-import User  from '../models/user.js';
+import Project from '../models/project.model.js';
+import Task from '../models/task.model.js';
+import User from '../models/user.model.js';
 import { GlobalRole, ProjectRole } from '../types/role.type.js';
-import type { AddProjectMemberInput, CreateProjectInput } from '../types/zod.project.js';
+import type {
+  AddProjectMemberInput,
+  CreateProjectInput,
+} from '../types/zod.project.js';
 import { HTTP_STATUS } from '../utils/httpStatusCode.js';
 import { AppError } from '../utils/utilityFunctions.js';
 
-export const getMyProjectsService = async (userId: string, userRole: string) => {
+export const getMyProjectsService = async (
+  userId: string,
+  userRole: string,
+) => {
   // Admin can see all projects
   if (userRole === GlobalRole.ADMIN) {
     const projects = await Project.find()
@@ -21,7 +28,9 @@ export const getMyProjectsService = async (userId: string, userRole: string) => 
   return projects;
 };
 
-export const createProjectService = async ({ ...projectData }: CreateProjectInput) => {
+export const createProjectService = async ({
+  ...projectData
+}: CreateProjectInput) => {
   if (!projectData.name)
     throw new AppError('Project name is required', HTTP_STATUS.BAD_REQUEST);
   const newProject = new Project({
@@ -39,8 +48,6 @@ export const createProjectService = async ({ ...projectData }: CreateProjectInpu
   return newSavedProject;
 };
 
-
-
 export const addProjectMemberService = async ({
   projectId,
   userId,
@@ -51,7 +58,7 @@ export const addProjectMemberService = async ({
   const project = await Project.findById(projectId);
 
   if (!project) {
-    throw new AppError("Project not found", HTTP_STATUS.NOT_FOUND);
+    throw new AppError('Project not found', HTTP_STATUS.NOT_FOUND);
   }
 
   // Look up user by ID or email
@@ -61,24 +68,24 @@ export const addProjectMemberService = async ({
 
   if (!user) {
     throw new AppError(
-      userId ? "User not found" : `No user found with email: ${email}`,
-      HTTP_STATUS.NOT_FOUND
+      userId ? 'User not found' : `No user found with email: ${email}`,
+      HTTP_STATUS.NOT_FOUND,
     );
   }
 
   // Prevent adding ADMIN as project member
   if (user.role === GlobalRole.ADMIN) {
     throw new AppError(
-      "Admin cannot be assigned project roles",
-      HTTP_STATUS.BAD_REQUEST
+      'Admin cannot be assigned project roles',
+      HTTP_STATUS.BAD_REQUEST,
     );
   }
 
   // PO/PM can only add DEVELOPERs — only ADMIN can assign PO/PM roles
   if (callerRole !== GlobalRole.ADMIN && role !== ProjectRole.DEVELOPER) {
     throw new AppError(
-      "You can only add members with the DEVELOPER role",
-      HTTP_STATUS.FORBIDDEN
+      'You can only add members with the DEVELOPER role',
+      HTTP_STATUS.FORBIDDEN,
     );
   }
 
@@ -86,40 +93,36 @@ export const addProjectMemberService = async ({
 
   // Check duplicate member
   const alreadyMember = project.members.find(
-    (m) => m.user.toString() === resolvedUserId
+    (m) => m.user.toString() === resolvedUserId,
   );
 
   if (alreadyMember) {
     throw new AppError(
-      "User is already a project member",
-      HTTP_STATUS.BAD_REQUEST
+      'User is already a project member',
+      HTTP_STATUS.BAD_REQUEST,
     );
   }
 
   // Enforce single PO
   if (role === ProjectRole.PO) {
-    const existingPO = project.members.find(
-      (m) => m.role === ProjectRole.PO
-    );
+    const existingPO = project.members.find((m) => m.role === ProjectRole.PO);
 
     if (existingPO) {
       throw new AppError(
-        "Project already has a Product Owner",
-        HTTP_STATUS.BAD_REQUEST
+        'Project already has a Product Owner',
+        HTTP_STATUS.BAD_REQUEST,
       );
     }
   }
 
   // Enforce single PM
   if (role === ProjectRole.PM) {
-    const existingPM = project.members.find(
-      (m) => m.role === ProjectRole.PM
-    );
+    const existingPM = project.members.find((m) => m.role === ProjectRole.PM);
 
     if (existingPM) {
       throw new AppError(
-        "Project already has a Project Manager",
-        HTTP_STATUS.BAD_REQUEST
+        'Project already has a Project Manager',
+        HTTP_STATUS.BAD_REQUEST,
       );
     }
   }
@@ -146,11 +149,11 @@ export const getProjectByIdService = async ({
   requesterRole,
 }: GetProjectByIdArgs) => {
   const project = await Project.findById(projectId)
-    .populate("createdBy", "name email")
-    .populate("members.user", "name email role");
+    .populate('createdBy', 'name email')
+    .populate('members.user', 'name email role');
 
   if (!project) {
-    throw new AppError("Project not found", HTTP_STATUS.NOT_FOUND);
+    throw new AppError('Project not found', HTTP_STATUS.NOT_FOUND);
   }
 
   // Admin can access any project
@@ -160,15 +163,32 @@ export const getProjectByIdService = async ({
 
   // Otherwise must be member
   const isMember = project.members.find(
-    (m) => m.user._id.toString() === requesterId
+    (m) => m.user._id.toString() === requesterId,
   );
 
   if (!isMember) {
     throw new AppError(
-      "You are not authorized to view this project",
-      HTTP_STATUS.FORBIDDEN
+      'You are not authorized to view this project',
+      HTTP_STATUS.FORBIDDEN,
     );
   }
 
   return project;
+};
+
+export const deleteProjectService = async ({
+  projectId,
+}: {
+  projectId: string;
+}) => {
+  const project = await Project.findOne({ _id: projectId });
+  if (!project)
+    throw new AppError(
+      'Project deletion failed',
+      HTTP_STATUS.NOT_FOUND,
+    );
+
+  await Task.deleteMany({ projectId });
+  await project.deleteOne();
+
 };

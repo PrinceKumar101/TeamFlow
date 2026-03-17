@@ -28,7 +28,7 @@ export function TaskList({ tasks }: TaskListProps) {
 
   return (
     <>
-      <Card className="flex flex-col gap-0">
+      <Card className="flex flex-col gap-0 border-border/70 bg-card/95 shadow-sm">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <div>
@@ -52,7 +52,7 @@ export function TaskList({ tasks }: TaskListProps) {
                 return (
                   <div
                     key={task.id}
-                    className="group flex cursor-pointer items-start gap-3 px-4 py-3 transition-colors hover:bg-muted/50"
+                    className="group flex cursor-pointer items-start gap-3 px-4 py-3 transition-all hover:bg-muted/50"
                     onClick={() => {
                       setEditTask(task);
                       setEditOpen(true);
@@ -67,7 +67,7 @@ export function TaskList({ tasks }: TaskListProps) {
                         <span className="shrink-0 text-xs font-mono text-muted-foreground">
                           {task.id}
                         </span>
-                        <span className="truncate text-sm font-medium">
+                        <span className="truncate text-sm font-medium group-hover:text-primary">
                           {task.title}
                         </span>
                       </div>

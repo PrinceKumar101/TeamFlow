@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useAppSelector, useAppDispatch } from "@/hooks/redux";
-import { updateTaskStatus, deleteTask } from "@/store/slices/tasksSlice";
+import { deleteTask } from "@/store/slices/tasksSlice";
 import { addActivity } from "@/store/slices/activitySlice";
 import { useProjectMap } from "@/hooks/useProjectMap";
 import { TaskCard } from "./task-card";

@@ -1,4 +1,4 @@
-import User  from "../models/user.js";
+import User  from "../models/user.model.js";
 import { hashPassword } from "../utils/hash.js";
 
 const DUMMY_USERS = [

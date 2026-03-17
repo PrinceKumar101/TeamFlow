@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { TaskPriority, TaskStatus } from '../models/task.js';
+import { TaskPriority, TaskStatus } from '../models/task.model.js';
 
 const baseTaskFields = {
   title: z.string().min(3).max(200).trim(),

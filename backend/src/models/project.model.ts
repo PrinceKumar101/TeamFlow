@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
+import { ProjectRole } from '../types/role.type.js';
 
 export enum ProjectStatus {
   ACTIVE = 'ACTIVE',
@@ -6,13 +7,9 @@ export enum ProjectStatus {
   ARCHIVED = 'ARCHIVED',
 }
 
-export enum ProjectRole {
-  PO = 'PO',
-  PM = 'PM',
-  DEVELOPER = 'DEVELOPER',
-}
 
-interface IProjectMember {
+
+export interface IProjectMember {
   user: Types.ObjectId;
   role: ProjectRole;
 }

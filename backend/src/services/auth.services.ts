@@ -1,4 +1,4 @@
-import User  from '../models/user.js';
+import User  from '../models/user.model.js';
 import { type userRegisterType } from '../types/zod.user.js';
 import { generateToken } from '../utils/token.js';
 import { comparePassoword, hashPassword } from '../utils/hash.js';

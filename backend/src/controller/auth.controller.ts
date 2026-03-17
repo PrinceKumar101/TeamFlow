@@ -1,7 +1,5 @@
 import { controllerType } from '../types/controller.types.js';
-import {
-  sendSuccessResponse,
-} from '../utils/utilityFunctions.js';
+import { sendSuccessResponse } from '../utils/utilityFunctions.js';
 import { HTTP_STATUS } from '../utils/httpStatusCode.js';
 import { type userRegisterType } from '../types/zod.user.js';
 import {
@@ -13,9 +11,17 @@ import { generateToken } from '../utils/token.js';
 import { GlobalRole } from '../types/role.type.js';
 
 export const registerUserController: controllerType = async (req, res) => {
-  const { name, email, password } = req.validatedData as Omit<userRegisterType, "role">;
+  const { name, email, password } = req.validatedData as Omit<
+    userRegisterType,
+    'role'
+  >;
 
-  const user = await registerUserService({ name, email, password, role : GlobalRole.USER });
+  const user = await registerUserService({
+    name,
+    email,
+    password,
+    role: GlobalRole.USER,
+  });
 
   const token = generateToken({
     id: user._id,
@@ -48,7 +54,7 @@ export const loginUserController: controllerType = async (req, res) => {
 
   const token = generateToken({
     id: user._id,
-    role: user.role ,
+    role: user.role,
     name: user.name,
   });
 

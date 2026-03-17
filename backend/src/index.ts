@@ -34,5 +34,6 @@ app.use(errorMiddleware);
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
+  console.log(`Frontend Url ${process.env.CORS_ORIGIN}`);
   console.log(`Example app listening on port ${port}`);
 });

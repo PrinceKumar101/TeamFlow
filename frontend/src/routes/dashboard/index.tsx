@@ -62,7 +62,8 @@ function DashboardPage() {
 
   if (isEmpty) {
     return (
-      <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8">
+      <div className="relative flex flex-1 flex-col gap-6 overflow-hidden p-4 sm:p-6 lg:p-8">
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.14),transparent_45%),radial-gradient(circle_at_bottom_left,hsl(var(--primary)/0.09),transparent_38%)]" />
         <DashboardHeader userName="User" />
         <EmptyState
           icon={IconRocket}
@@ -79,13 +80,16 @@ function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8">
+    <div className="relative flex flex-1 flex-col gap-6 overflow-hidden p-4 sm:p-6 lg:p-8">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.16),transparent_45%),radial-gradient(circle_at_bottom_left,hsl(var(--primary)/0.10),transparent_35%)]" />
       {/* Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <DashboardHeader userName="User" />
-        <div className="flex gap-2">
-          <CreateProjectDialog />
-          <CreateTaskDialog />
+      <div className="rounded-2xl border border-border/70 bg-card/75 p-4 shadow-sm backdrop-blur-sm sm:p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <DashboardHeader userName="User" />
+          <div className="flex flex-wrap gap-2">
+            <CreateProjectDialog />
+            <CreateTaskDialog />
+          </div>
         </div>
       </div>
 

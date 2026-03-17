@@ -46,12 +46,13 @@ const schema = z.object({
   dueDate: z.string().optional(),
 });
 
-type FormValues = z.infer<typeof schema>;
-
 interface Props {
   projects: ProjectItem[];
   trigger?: React.ReactNode;
 }
+
+type FormInput = z.input<typeof schema>;
+type FormOutput = z.output<typeof schema>;
 
 export function BacklogCreateTaskDialog({ projects, trigger }: Props) {
   const user = useAppSelector((s) => s.auth.user);
@@ -62,7 +63,7 @@ export function BacklogCreateTaskDialog({ projects, trigger }: Props) {
   const [assigneeDialogOpen, setAssigneeDialogOpen] = useState(false);
   const [search, setSearch] = useState("");
 
-  const form = useForm<FormValues>({
+  const form = useForm<FormInput, unknown, FormOutput>({
     resolver: zodResolver(schema),
     defaultValues: {
       projectId: "",
@@ -112,7 +113,7 @@ export function BacklogCreateTaskDialog({ projects, trigger }: Props) {
       .toUpperCase()
       .slice(0, 2);
 
-  const onSubmit = (values: FormValues) => {
+  const onSubmit = (values: FormOutput) => {
     createTask.mutate(
       {
         projectId: values.projectId,

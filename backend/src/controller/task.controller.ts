@@ -7,19 +7,17 @@ import {
   getSingleTaskService,
   deleteTaskService,
 } from '../services/task.services.js';
-import {
-  createTaskType,
-  updateTaskStatusType,
-} from '../types/zod.task.js';
+import { createTaskType, updateTaskStatusType } from '../types/zod.task.js';
 import { AppError, sendSuccessResponse } from '../utils/utilityFunctions.js';
 import { AddProjectMemberInput } from '../types/zod.project.js';
+import { controllerType } from '../types/controller.types.js';
 
 /**
  * @desc    Create Task or Subtask
  * @route   POST /projects/:id/tasks
  * @access  PO, PM
  */
-export const createTaskController = async (
+export const createTaskController: controllerType = async (
   req: Request,
   res: Response,
 ) => {
@@ -29,14 +27,8 @@ export const createTaskController = async (
     throw new AppError('Project ID is required', HTTP_STATUS.BAD_REQUEST);
   }
 
-  const {
-    title,
-    description,
-    assignedTo,
-    priority,
-    dueDate,
-    parentTaskId,
-  } = req.validatedData as createTaskType;
+  const { title, description, assignedTo, priority, dueDate, parentTaskId } =
+    req.validatedData as createTaskType;
 
   const task = await createTaskService({
     projectId,
@@ -57,13 +49,12 @@ export const createTaskController = async (
   );
 };
 
-
 /**
  * @desc    Get All Tasks By Project
  * @route   GET /projects/:id/tasks
  * @access  Project members
  */
-export const getTasksByProjectController = async (
+export const getTasksByProjectController: controllerType = async (
   req: Request,
   res: Response,
 ) => {
@@ -75,21 +66,15 @@ export const getTasksByProjectController = async (
 
   const tasks = await getTasksByProjectService(projectId);
 
-  sendSuccessResponse(
-    res,
-    HTTP_STATUS.OK,
-    'Tasks fetched successfully',
-    tasks,
-  );
+  sendSuccessResponse(res, HTTP_STATUS.OK, 'Tasks fetched successfully', tasks);
 };
-
 
 /**
  * @desc    Get Single Task
  * @route   GET /projects/:id/tasks/:taskId
  * @access  Project members
  */
-export const getSingleTaskController = async (
+export const getSingleTaskController: controllerType = async (
   req: Request,
   res: Response,
 ) => {
@@ -101,21 +86,15 @@ export const getSingleTaskController = async (
 
   const task = await getSingleTaskService(taskId);
 
-  sendSuccessResponse(
-    res,
-    HTTP_STATUS.OK,
-    'Task fetched successfully',
-    task,
-  );
+  sendSuccessResponse(res, HTTP_STATUS.OK, 'Task fetched successfully', task);
 };
-
 
 /**
  * @desc    Update Task Status
  * @route   PATCH /projects/:id/tasks/:taskId/status
  * @access  Developer (assigned only), PO, PM
  */
-export const updateTaskStatusController = async (
+export const updateTaskStatusController: controllerType = async (
   req: Request,
   res: Response,
 ) => {
@@ -142,13 +121,12 @@ export const updateTaskStatusController = async (
   );
 };
 
-
 /**
  * @desc    Delete Task
  * @route   DELETE /projects/:id/tasks/:taskId
  * @access  PO, PM
  */
-export const deleteTaskController = async (
+export const deleteTaskController: controllerType = async (
   req: Request,
   res: Response,
 ) => {
@@ -160,10 +138,5 @@ export const deleteTaskController = async (
 
   await deleteTaskService(taskId);
 
-  sendSuccessResponse(
-    res,
-    HTTP_STATUS.OK,
-    'Task deleted successfully',
-    null,
-  );
+  sendSuccessResponse(res, HTTP_STATUS.OK, 'Task deleted successfully', null);
 };

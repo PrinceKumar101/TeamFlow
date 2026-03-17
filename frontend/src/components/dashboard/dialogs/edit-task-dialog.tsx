@@ -25,7 +25,6 @@ import {
 import { IconTrash } from "@tabler/icons-react";
 import { SubtaskList } from "../subtask-list";
 import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface EditTaskDialogProps {
   task: Task | null;

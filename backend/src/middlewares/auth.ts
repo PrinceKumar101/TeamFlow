@@ -4,7 +4,7 @@ import { HTTP_STATUS } from '../utils/httpStatusCode.js';
 import { ZodTypeAny } from 'zod';
 import { tokenDataType, verifyToken } from '../utils/token.js';
 import { GlobalRole, ProjectRole } from '../types/role.type.js';
-import Project from '../models/project.js';
+import Project from '../models/project.model.js';
 
 export const validate = (schema: ZodTypeAny) => {
   return (req: Request, res: Response, next: NextFunction) => {

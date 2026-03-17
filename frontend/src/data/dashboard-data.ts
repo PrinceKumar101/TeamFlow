@@ -1,9 +1,4 @@
-import type {
-  Task,
-  Activity,
-  ProjectSummary,
-  DashboardStats,
-} from "@/types/dashboard";
+import type { DashboardStats } from "@/types/dashboard";
 
 export const dashboardStats: DashboardStats = {
   totalTasks: 24,
@@ -12,7 +7,7 @@ export const dashboardStats: DashboardStats = {
   overdue: 4,
 };
 
-export const myTasks: Task[] = [
+export const myTasks = [
   {
     id: "TASK-1001",
     title: "Implement user authentication flow",
@@ -127,7 +122,7 @@ export const myTasks: Task[] = [
   },
 ];
 
-export const recentActivity: Activity[] = [
+export const recentActivity = [
   {
     id: "act-1",
     user: { name: "Sarah Chen" },
@@ -178,7 +173,7 @@ export const recentActivity: Activity[] = [
   },
 ];
 
-export const projectSummaries: ProjectSummary[] = [
+export const projectSummaries = [
   {
     id: "proj-1",
     name: "TeamFlow Core",
@@ -214,7 +209,7 @@ export const projectSummaries: ProjectSummary[] = [
 ];
 
 // Full backlog - all tasks across all projects, for the backlog page
-export const backlogTasks: Task[] = [
+export const backlogTasks = [
   ...myTasks,
   {
     id: "TASK-1009",

@@ -1,9 +1,9 @@
 import { AppError } from '../utils/utilityFunctions.js';
 import { HTTP_STATUS } from '../utils/httpStatusCode.js';
 import { createTaskType } from '../types/zod.task.js';
-import Project from '../models/project.js';
+import Project from '../models/project.model.js';
 import { GlobalRole, ProjectRole } from '../types/role.type.js';
-import Task, { TaskStatus } from '../models/task.js';
+import Task, { TaskStatus } from '../models/task.model.js';
 type CreateTaskArgs = createTaskType & {
   projectId: string;
   createdBy: string;

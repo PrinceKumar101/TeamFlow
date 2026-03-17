@@ -26,7 +26,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Plus, UserCircle, Check, Search, X } from "lucide-react";
@@ -40,19 +39,20 @@ const schema = z.object({
   dueDate: z.string().optional(),
 });
 
-type FormValues = z.infer<typeof schema>;
-
 interface Props {
   projectId: string;
   members: UserInfo[];
 }
+
+type FormInput = z.input<typeof schema>;
+type FormOutput = z.output<typeof schema>;
 
 export function AddTaskForm({ projectId, members }: Props) {
   const createTask = useCreateTask();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [search, setSearch] = useState("");
 
-  const form = useForm<FormValues>({
+  const form = useForm<FormInput, unknown, FormOutput>({
     resolver: zodResolver(schema),
     defaultValues: {
       title: "",
@@ -80,7 +80,7 @@ export function AddTaskForm({ projectId, members }: Props) {
       .toUpperCase()
       .slice(0, 2);
 
-  const onSubmit = (values: FormValues) => {
+  const onSubmit = (values: FormOutput) => {
     createTask.mutate(
       {
         projectId,
