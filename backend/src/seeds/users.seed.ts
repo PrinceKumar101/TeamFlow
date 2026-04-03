@@ -1,5 +1,5 @@
 import User  from "../models/user.model.js";
-import { hashPassword } from "../utils/hash.js";
+import { hash } from "../utils/hash.js";
 
 const DUMMY_USERS = [
   { name: "Alice Johnson", email: "alice@teamflow.dev" },
@@ -19,7 +19,7 @@ const DUMMY_USERS = [
  * Safe to call on every server start — skips existing emails.
  */
 export const seedDummyUsers = async () => {
-  const defaultPassword = await hashPassword("password123");
+  const defaultPassword = await hash("password123");
 
   let created = 0;
   for (const u of DUMMY_USERS) {

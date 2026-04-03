@@ -5,6 +5,7 @@ import {
   getMeController,
   loginUserController,
   logoutController,
+  refreshTokenController,
   registerUserController,
 } from '../controller/auth.controller.js';
 import { getAllUsersController } from '../controller/user.controller.js';
@@ -29,6 +30,10 @@ router.post(
 );
 
 router.post('/logout', protect, asyncHandler(logoutController));
+
 router.get('/me', protect, asyncHandler(getMeController));
+
 router.get('/users', protect, asyncHandler(getAllUsersController));
+
+router.post('/refreshToken', asyncHandler(refreshTokenController));
 export { router as userRoutes };

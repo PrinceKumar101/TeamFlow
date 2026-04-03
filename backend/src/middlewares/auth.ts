@@ -32,7 +32,7 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
 
   const decoded = verifyToken(token) as tokenDataType
 
-  req.userId = decoded?.id;
+  req.userId = decoded?.userId;
   req.userRole = decoded?.role
   next();
 };

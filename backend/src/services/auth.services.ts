@@ -1,10 +1,8 @@
 import User  from '../models/user.model.js';
 import { type userRegisterType } from '../types/zod.user.js';
-import { generateToken } from '../utils/token.js';
-import { comparePassoword, hashPassword } from '../utils/hash.js';
+import { compareHash, hash } from '../utils/hash.js';
 import { AppError } from '../utils/utilityFunctions.js';
 import { HTTP_STATUS } from '../utils/httpStatusCode.js';
-import { ObjectId } from 'mongoose';
 
 export const registerUserService = async (userData: userRegisterType) => {
   const foundUser = await User.findOne({ email: userData.email });
@@ -12,7 +10,7 @@ export const registerUserService = async (userData: userRegisterType) => {
   if (foundUser)
     throw new AppError('User Already Exists', HTTP_STATUS.BAD_REQUEST);
 
-  const hashedPassword = await hashPassword(userData.password);
+  const hashedPassword = await hash(userData.password);
 
   const newUser = new User({
     ...userData,
@@ -29,6 +27,7 @@ export const registerUserService = async (userData: userRegisterType) => {
 
   return savedUser;
 };
+
 export const loginUserService = async (
   userData: Pick<userRegisterType, 'email' | 'password'>,
 ) => {
@@ -40,9 +39,9 @@ export const loginUserService = async (
       HTTP_STATUS.UNAUTHORIZED,
     );
 
-  const checkedPassword = await comparePassoword({
-    password: userData.password,
-    hashedPassword: foundUser.password,
+  const checkedPassword = await compareHash({
+    plaintext: userData.password,
+    hashedText: foundUser.password,
   });
 
   if (!checkedPassword)
@@ -51,8 +50,19 @@ export const loginUserService = async (
   return foundUser;
 };
 
-export const getMeService = async (userId: ObjectId) => {
+export const getMeService = async (userId: string) => {
   const user = await User.findById(userId).select('-password');
   if (!user) throw new AppError('user not found', HTTP_STATUS.UNAUTHORIZED);
   return user;
+};
+
+export const refreshTokenService = async (userId: string) =>{
+  const user = await User.findById(userId).select('_id refreshToken isBlocked role');
+  if(!user || !user.refreshToken) throw new AppError("User not found", HTTP_STATUS.UNAUTHORIZED);
+  if(user.isBlocked) throw new AppError("User blocked", HTTP_STATUS.FORBIDDEN);
+  return user;
+}
+
+export const clearRefreshTokenService = async (userId: string) => {
+  await User.findByIdAndUpdate(userId, { $unset: { refreshToken: 1 } });
 };

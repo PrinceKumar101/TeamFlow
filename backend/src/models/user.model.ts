@@ -4,6 +4,13 @@ import { GlobalRole } from '../types/role.type.js';
 
 const { Schema } = mongoose;
 
+const refreshTokenSchema = new Schema({
+  tokenId: { type: String, required: true },
+  tokenHash: { type: String, required: true },
+  expiresAt: { type: Date, required: true },
+  createdAt: { type: Date, default: Date.now }
+});
+
 const userSchema = new Schema(
   {
     name: {
@@ -26,10 +33,7 @@ const userSchema = new Schema(
       trim: true,
     },
 
-    refreshToken: {
-      type: String,
-      default: '',
-    },
+    refreshToken: refreshTokenSchema,
 
     isVerified: {
       type: Boolean,
