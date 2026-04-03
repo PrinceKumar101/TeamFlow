@@ -1,6 +1,7 @@
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { AppError } from './utilityFunctions.js';
 import { GlobalRole } from '../types/role.type.js';
+import { HTTP_STATUS } from './httpStatusCode.js';
 
 export type tokenDataType = {
   tokenId: string;
@@ -29,12 +30,22 @@ export const verifyToken = (token: string) => {
   if (!secret_key) {
     throw new AppError('Error verifying the token due to secret key.');
   }
-  return jwt.verify(token, secret_key);
+
+  try {
+    return jwt.verify(token, secret_key);
+  } catch {
+    throw new AppError('Invalid or expired access token', HTTP_STATUS.UNAUTHORIZED);
+  }
 };
 export const verifyRefreshToken = (token: string) => {
   const secret_key = process.env.JWT_REFRESH_SECRET_KEY;
   if (!secret_key) {
     throw new AppError('Error Verifying the token due to secret key.');
   }
-  return jwt.verify(token, secret_key);
+
+  try {
+    return jwt.verify(token, secret_key);
+  } catch {
+    throw new AppError('Invalid or expired refresh token', HTTP_STATUS.UNAUTHORIZED);
+  }
 };

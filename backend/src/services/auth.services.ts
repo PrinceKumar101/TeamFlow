@@ -47,6 +47,9 @@ export const loginUserService = async (
   if (!checkedPassword)
     throw new AppError('Incorrect password', HTTP_STATUS.BAD_REQUEST);
 
+  if (foundUser.isBlocked)
+    throw new AppError('User blocked', HTTP_STATUS.FORBIDDEN);
+
   return foundUser;
 };
 
@@ -57,7 +60,7 @@ export const getMeService = async (userId: string) => {
 };
 
 export const refreshTokenService = async (userId: string) =>{
-  const user = await User.findById(userId).select('_id refreshToken isBlocked role');
+  const user = await User.findById(userId).select('_id name refreshToken isBlocked role passwordChangedAt');
   if(!user || !user.refreshToken) throw new AppError("User not found", HTTP_STATUS.UNAUTHORIZED);
   if(user.isBlocked) throw new AppError("User blocked", HTTP_STATUS.FORBIDDEN);
   return user;

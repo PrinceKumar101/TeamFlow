@@ -177,15 +177,46 @@ export const refreshTokenController : controllerType = async (req, res) =>{
     throw new AppError('Refresh token expired', HTTP_STATUS.UNAUTHORIZED);
   }
 
+  if (
+    user.passwordChangedAt &&
+    new Date(user.refreshToken.createdAt).getTime() <
+      new Date(user.passwordChangedAt).getTime()
+  ) {
+    throw new AppError(
+      'Session invalidated after password change',
+      HTTP_STATUS.UNAUTHORIZED,
+    );
+  }
+
   if (hashToken(clientSideToken) !== user.refreshToken.tokenHash) {
     throw new AppError('Invalid refresh token', HTTP_STATUS.UNAUTHORIZED);
   }
+
+  const nextRefreshTokenId = randomUUID();
+  const nextRefreshToken = generateToken(
+    {
+      tokenId: nextRefreshTokenId,
+      userId: user._id.toString(),
+      role: user.role,
+      name: user.name,
+    },
+    REFRESH_TOKEN_TTL_SECONDS,
+    'refreshToken',
+  );
+
+  user.refreshToken = {
+    tokenId: nextRefreshTokenId,
+    tokenHash: hashToken(nextRefreshToken),
+    expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL_SECONDS * 1000),
+    createdAt: new Date(),
+  };
+  await user.save();
 
   const accessToken = generateToken({
     tokenId: randomUUID(),
     userId: user._id.toString(),
     role: user.role,
-    name: decodedToken.name,
+    name: user.name,
   });
 
   res.cookie('accessToken', accessToken, {
@@ -193,6 +224,13 @@ export const refreshTokenController : controllerType = async (req, res) =>{
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     maxAge: 1000 * 60 * 60,
+  });
+
+  res.cookie('refreshToken', nextRefreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 1000 * 60 * 60 * 24 * 7,
   });
 
   sendSuccessResponse(res, HTTP_STATUS.OK, 'Access token refreshed', {
