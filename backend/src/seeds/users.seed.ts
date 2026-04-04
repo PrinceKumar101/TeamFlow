@@ -1,5 +1,6 @@
 import User  from "../models/user.model.js";
 import { hash } from "../utils/hash.js";
+import { GlobalRole } from "../types/role.type.js";
 
 const DUMMY_USERS = [
   { name: "Alice Johnson", email: "alice@teamflow.dev" },
@@ -29,7 +30,7 @@ export const seedDummyUsers = async () => {
         name: u.name,
         email: u.email,
         password: defaultPassword,
-        role: "user",
+        role: GlobalRole.USER,
       });
       created++;
     }

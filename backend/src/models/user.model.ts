@@ -50,7 +50,7 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: GlobalRole,
+      enum: Object.values(GlobalRole),
       default: GlobalRole.USER,
     },
   },
@@ -58,6 +58,12 @@ const userSchema = new Schema(
     timestamps: true,
   },
 );
+
+userSchema.pre('validate', function () {
+  if (typeof this.role === 'string') {
+    this.role = this.role.toLowerCase() as GlobalRole;
+  }
+});
 
 const User = mongoose.model('User', userSchema);
 export default User;
